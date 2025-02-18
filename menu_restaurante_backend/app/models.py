@@ -20,6 +20,7 @@ class Cliente(models.Model):
 class Cocinero(models.Model):
     id_cocinero = models.AutoField(primary_key=True)
     nombre = models.CharField(max_length=100)
+    pedido_id_pedido = models.ForeignKey('Pedido', models.DO_NOTHING, db_column='pedido_id_pedido')
 
     class Meta:
         managed = False
@@ -60,6 +61,7 @@ class Mesa(models.Model):
 class Mesero(models.Model):
     id_mesero = models.AutoField(primary_key=True)
     nombre = models.CharField(max_length=100)
+    plato_id_plato = models.ForeignKey('Plato', models.DO_NOTHING, db_column='plato_id_plato')
 
     class Meta:
         managed = False
@@ -71,7 +73,6 @@ class Pedido(models.Model):
     fecha_hora = models.DateTimeField()
     estado = models.CharField(max_length=50)
     mesa_id_mesa = models.ForeignKey(Mesa, models.DO_NOTHING, db_column='mesa_id_mesa')
-    mesero_id_mesero = models.ForeignKey(Mesero, models.DO_NOTHING, db_column='mesero_id_mesero')
     factura_id_factura = models.ForeignKey(Factura, models.DO_NOTHING, db_column='factura_id_factura')
 
     class Meta:
