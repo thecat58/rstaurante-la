@@ -10,67 +10,83 @@ from django.db import models
 from .modeloP import *
 
 
+from django.db import models
 
-class Factura(models.Model):
-    id_factura = models.AutoField(primary_key=True)
-    total = models.DecimalField(max_digits=10, decimal_places=2)
-    fecha_hora = models.DateTimeField()
+
+class Detallefactura(models.Model):
+    factura = models.ForeignKey('Factura', models.DO_NOTHING, blank=True, null=True)
+    plato = models.ForeignKey('Plato', models.DO_NOTHING, blank=True, null=True)
+    cantidad = models.IntegerField(blank=True, null=True)
+    precio_unitario = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
 
     class Meta:
-        managed = True
+        managed = False
+        db_table = 'detallefactura'
+
+
+class Factura(models.Model):
+    fecha = models.DateField()
+    total_pago = models.DecimalField(max_digits=10, decimal_places=2)
+    pedido = models.ForeignKey('Pedido', models.DO_NOTHING, blank=True, null=True)
+
+    class Meta:
+        managed = False
         db_table = 'factura'
 
 
-class Mesa(models.Model):
-    id_mesa = models.AutoField(primary_key=True)
-    numero_mesa = models.IntegerField(unique=True)
-    qr_code = models.CharField(max_length=255)
-
-    class Meta:
-        managed = True
-        db_table = 'mesa'
-
-
-
-class Pedido(models.Model):
-    id_pedido = models.AutoField(primary_key=True)
-    fecha_hora = models.DateTimeField()
-    estado = models.CharField(max_length=50)
-    mesa_id_mesa = models.ForeignKey(Mesa, models.DO_NOTHING, db_column='mesa_id_mesa')
-
-    class Meta:
-        managed = True
-        db_table = 'pedido'
-
-
 class Menu(models.Model):
-    id_menu = models.AutoField(primary_key=True)
-    nombre = models.CharField(max_length=100)
-    descripcion = models.TextField(blank=True, null=True)
+    tipo_menu = models.CharField(max_length=255)
+    restaurante_id = models.IntegerField(blank=True, null=True)
 
     class Meta:
-        managed = True
+        managed = False
         db_table = 'menu'
 
 
-class Plato(models.Model):
-    id_plato = models.AutoField(primary_key=True)
-    nombre = models.CharField(max_length=100)
-    descripcion = models.TextField(blank=True, null=True)
-    precio = models.DecimalField(max_digits=10, decimal_places=2)
-    menu_id_menu = models.ForeignKey(Menu, models.DO_NOTHING, db_column='menu_id_menu')  # Relación con Menu
+class Mesa(models.Model):
+    qr = models.CharField(max_length=255)
+    restaurante_id = models.IntegerField(blank=True, null=True)
 
     class Meta:
-        managed = True
-        db_table = 'plato'
+        managed = False
+        db_table = 'mesa'
+
+
+class Pedido(models.Model):
+    cliente_id = models.IntegerField(blank=True, null=True)
+    mesa = models.ForeignKey(Mesa, models.DO_NOTHING, blank=True, null=True)
+    estado = models.CharField(max_length=255)
+
+    class Meta:
+        managed = False
+        db_table = 'pedido'
 
 
 class PedidoPlato(models.Model):
-    pedido = models.ForeignKey(Pedido, on_delete=models.CASCADE, db_column='pedido_id')
-    plato = models.ForeignKey(Plato, on_delete=models.CASCADE, db_column='plato_id')
-    cantidad = models.PositiveIntegerField(default=1)  # Cantidad de platos en el pedido
+    pedido = models.ForeignKey(Pedido, models.DO_NOTHING, blank=True, null=True)
+    plato = models.ForeignKey('Plato', models.DO_NOTHING, blank=True, null=True)
+    cantidad = models.IntegerField(blank=True, null=True)
 
     class Meta:
-        managed = True
-        db_table = 'pedido_plato'
+        managed = False
+        db_table = 'pedidoplato'
         unique_together = ('pedido', 'plato')  # Evitar duplicados de la misma combinación
+
+
+class Plato(models.Model):
+    nombre = models.CharField(max_length=255)
+    precio = models.DecimalField(max_digits=10, decimal_places=2)
+    tipo_plato = models.ForeignKey('Tipoplato', models.DO_NOTHING, blank=True, null=True)
+    menu = models.ForeignKey(Menu, models.DO_NOTHING)
+
+    class Meta:
+        managed = False
+        db_table = 'plato'
+
+
+class Tipoplato(models.Model):
+    nombre = models.CharField(max_length=255)
+
+    class Meta:
+        managed = False
+        db_table = 'tipoplato'
