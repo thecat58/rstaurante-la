@@ -1,0 +1,14 @@
+@tailwind components;
+@layer components {
+    .login-container{
+        @apply h-full;
+        @apply flex flex-col items-center gap-2;
+    }
+    .login-container__img{
+        @apply h-[100px] w-[100px];
+    }
+    .login-container__text{
+        @apply px-3;
+        @apply flex flex-col gap-1 items-center;
+    }
+}

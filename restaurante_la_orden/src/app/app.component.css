@@ -1,0 +1,27 @@
+@tailwind components;
+@layer components {
+    .layout-container{
+        @apply flex flex-col min-h-screen justify-between;
+    }
+    .header-container,
+    .footer-container{
+        @apply w-full px-5 py-3;
+    }
+    .header-container{
+        @apply bg-[--primary-yellow-color];
+        @apply flex justify-center items-center;
+    }
+    .footer-container{
+        @apply bg-[--primary-blue-color];
+        @apply relative bottom-0;
+        @apply flex flex-col gap-2 justify-start items-start;
+    }
+    .header-container__logo,
+    .footer-container__logo{
+        @apply h-[50px];
+    }
+    .footer-container__message{
+        @apply max-w-[350px];
+        @apply text-sm text-white;
+    }
+}

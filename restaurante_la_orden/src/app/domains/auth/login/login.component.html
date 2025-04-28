@@ -1,0 +1,48 @@
+<div class="login-container">
+    <img class="login-container__img" src="/img/usuario.png">
+    <div class="login-container__text">
+        <span class="container-text__title">Bienvenido</span>
+        <span class="container-text__desc">Inicie sesión en su cuenta para continuar</span>
+    </div>
+    <form  nz-form [formGroup]="form"  (ngSubmit)="submitForm()" class="space-y-4">
+        <!-- Username -->
+        <div class="relative">
+            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <svg class="w-5 h-5 text-orange-400" fill="none" stroke="currentColor" stroke-width="2"
+                     viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                          d="M5.121 17.804A11.958 11.958 0 0112 15c2.178 0 4.207.583 5.879 1.582M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+                </svg>
+            </div>
+            <input type="text" formControlName="username" placeholder="Admin123"
+                   class="w-full pl-10 p-3 rounded-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-orange-400">
+        </div>
+
+        <!-- Password -->
+        <div class="relative">
+            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <svg class="w-5 h-5 text-orange-400" fill="none" stroke="currentColor" stroke-width="2"
+                     viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                          d="M12 11c0-1.656-1.344-3-3-3s-3 1.344-3 3c0 1.473 1.095 2.688 2.5 2.95v1.05h1v-1.05A2.99 2.99 0 0012 11zM17 11c0-2.761-2.239-5-5-5s-5 2.239-5 5a5 5 0 0010 0z"/>
+                </svg>
+            </div>
+            <input type="password" formControlName="password" placeholder="Contraseña123"
+                   class="w-full pl-10 p-3 rounded-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-orange-400">
+        </div>
+
+        <div class="text-right">
+            <a href="#" class="text-sm text-gray-500 hover:text-orange-400">¿Olvidaste tu contraseña?</a>
+        </div>
+
+        <button type="submit"
+                class="w-full bg-orange-400 text-white p-3 rounded-full hover:bg-orange-500 transition">
+            Iniciar sesión
+        </button>
+
+        <div class="text-center mt-4">
+            <span class="text-gray-600 text-sm">¿No tienes cuenta?</span>
+            <a href="#" class="text-sm text-orange-400 font-semibold hover:underline">Regístrate</a>
+        </div>
+    </form>
+</div>

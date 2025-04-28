@@ -1,0 +1,19 @@
+/* You can add global styles to this file, and also import other style files */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+    --primary-yellow-color: theme(colors.amber.500);
+    --secondary-yellow-colors: theme(colors.amber.100);
+    --primary-blue-color:theme(colors.sky.950)
+}
+
+html{
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+body{
+    @apply min-h-screen;
+    @apply flex flex-col justify-between;
+}
