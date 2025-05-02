@@ -1,0 +1,7 @@
+nz-qrcode {
+    margin-right: 12px;
+}
+
+::ng-deep .ant-qrcode canvas {
+padding: 13px;
+}
