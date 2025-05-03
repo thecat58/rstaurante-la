@@ -28,13 +28,13 @@ class PlatoView(APIView):
 
             # Serializar y devolver el plato creado
             serializer = PlatoSerializer(plato)
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+            return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
         except Menu.DoesNotExist:
             return Response({'error': 'Menú no encontrado'}, status=status.HTTP_404_NOT_FOUND)
         except Exception as e:
             return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
-    def get(self, request, plato_id=None):
+    def get(self, plato_id=None):
         """
         Obtener uno o todos los platos.
         """

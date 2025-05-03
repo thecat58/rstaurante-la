@@ -7,7 +7,6 @@ class Detallefactura(models.Model):
     factura = models.ForeignKey('Factura', models.DO_NOTHING, blank=True, null=True)
     plato = models.ForeignKey('Plato', models.DO_NOTHING, blank=True, null=True)
     cantidad = models.IntegerField(blank=True, null=True)
-    precio_unitario = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
 
     class Meta:
         managed = False
@@ -28,6 +27,8 @@ class DetalleFactura(models.Model):
     id_detalle_factura = models.AutoField(primary_key=True)
     cantidad = models.IntegerField()    
     id_factura= models.ForeignKey(Factura, models.DO_NOTHING, db_column='id_factura')
+    precio_unitario = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
+
     class Meta:
         managed = True
         db_table = 'detalle_factura'
