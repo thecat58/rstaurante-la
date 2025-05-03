@@ -20,29 +20,32 @@ class Mesaclass(APIView):
         data = request.data
         serializer = MesaSerializer(data=data)
         try:
-            Mesas= Mesa.objects.create(
+            # Crear la instancia de Mesa con el color proporcionado o el valor predeterminado
+            Mesas = Mesa.objects.create(
                 numero_mesa=data['numero_mesa'],
                 qr_code=data['qr_code'],
+                colorQr=data.get('colorQr', "#000000"),  # Usar el color proporcionado o el predeterminado
+                descripcion=data.get('descripcion', '')  # Usar la descripción proporcionada o una cadena vacía
             )
-            serializer= MesaSerializer(Mesas)
+            serializer = MesaSerializer(Mesas)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         except Exception as e:
-            return Response({'error':str(e)}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
     def put(self, request):
-        mesa_id= request.data.get('id')
+        mesa_id = request.data.get('id')
         if not mesa_id:
-            return Response({'error':'Id mesa no proporcionado'}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'error': 'Id de la mesa no proporcionado'}, status=status.HTTP_400_BAD_REQUEST)
         try:
-            mesa= Mesa.object.get(id=mesa_id)
-            mesa.numero_mesa=request.data.get('numero_mesa', mesa.numero_mesa)
-            mesa.qr_code=request.data.get('qr_code', mesa.qr_code)
-            if 'password' in request.data:
-                mesa.set_password(request.data['password'])
-                mesa.save()
-                serializer = MesaSerializer(mesa)
-                return Response(serializer.data, status=status.HTTP_200_OK)
-        except mesa.DoesNotExist:
-                return Response({'error': 'Usuario no encontrado'}, status=status.HTTP_404_NOT_FOUND)
+            mesa = Mesa.objects.get(id=mesa_id)
+            mesa.numero_mesa = request.data.get('numero_mesa', mesa.numero_mesa)
+            mesa.qr_code = request.data.get('qr_code', mesa.qr_code)
+            mesa.colorQr = request.data.get('colorQr', mesa.colorQr)  # Actualizar el color si se proporciona
+            mesa.descripcion = request.data.get('descripcion', mesa.descripcion)  # Actualizar la descripción si se proporciona
+            mesa.save()
+            serializer = MesaSerializer(mesa)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except Mesa.DoesNotExist:
+            return Response({'error': 'Mesa no encontrada'}, status=status.HTTP_404_NOT_FOUND)
         except Exception as e:
-                return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)

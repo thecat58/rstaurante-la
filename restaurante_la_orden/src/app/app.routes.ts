@@ -14,5 +14,12 @@ export const routes: Routes = [
         path:'pagues/mesas',
         title:'mesas',
         loadComponent: ()=> import('@domains/pagues/mesas/mesas.component').then(c=>c.MesasComponent)
+    },
+    {
+        path: 'mesa/:mesa_id/menu',
+        title: 'Menú',
+        loadComponent: () =>
+        import('@domains/pagues/menu/menu.component').then(m => m.MenuComponent)
     }
+      
 ];

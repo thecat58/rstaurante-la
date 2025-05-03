@@ -1,0 +1,34 @@
+<div class="text-center text-3xl font-bold text-orange-500 my-6">MENÚ</div>
+
+<div class="flex flex-col gap-6">
+  <div *ngFor="let plato of platos" class="bg-[#f1e1c6] rounded-3xl p-4 flex items-center gap-4">
+    <!-- <img [src]="plato.imagen" alt="plato" class="w-24 h-24 object-cover rounded-xl"> -->
+    
+    <div class="flex-1 text-left">
+      <div class="text-xl font-bold text-[#003366]">{{ plato.nombre }}</div>
+      <div class="text-sm text-[#003366] mb-2">{{ plato.descripcion }}</div>
+      <div class="text-right font-bold text-[#003366]">{{ plato.precio | currency:'COP' }}</div>
+
+      <div class="flex items-center gap-3 mt-2">
+        <button (click)="decrementar(plato)" class="bg-[#003366] text-white w-8 h-8 rounded-full">-</button>
+        <span>{{ plato.cantidad }}</span>
+        <button (click)="incrementar(plato)" class="bg-[#003366] text-white w-8 h-8 rounded-full">+</button>
+        <button (click)="agregarAlCarrito(plato)" class="ml-4 bg-[#003366] text-white px-4 py-2 rounded-full">Agregar a la orden</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Carrito -->
+<div class="bg-white rounded-3xl shadow-md p-6 mt-10">
+  <h2 class="text-2xl text-[#003366] font-bold mb-4">Orden</h2>
+  <div class="flex justify-between text-[#003366] font-semibold">
+    <span>TOTAL: {{ total | currency:'COP' }}</span>
+    <span>ITEMS: {{ items }}</span>
+  </div>
+
+  <div class="flex justify-around mt-6 gap-4">
+    <button (click)="cancelarOrden()" class="bg-[#f1e1c6] text-[#003366] font-bold px-6 py-2 rounded-full">CANCELAR</button>
+    <button (click)="continuarOrden()" class="bg-[#003366] text-white font-bold px-6 py-2 rounded-full">CONTINUAR</button>
+  </div>
+</div>

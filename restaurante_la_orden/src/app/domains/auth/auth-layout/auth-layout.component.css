@@ -1,17 +1,19 @@
 @tailwind components;
 
-@layer components{
-    .auth-container{
-        @apply w-full;
+@layer components {
+    .auth-container {
+        @apply w-full h-[78vh]; /* en lugar de min-h-screen */
         @apply bg-[--secondary-yellow-color];
         @apply grid grid-cols-1 sm:grid-cols-2;
     }
-    .auth-container__img{
-        @apply h-full;
-        @apply hidden;
-        @apply sm:block;
+    
+
+    .auth-container__img {
+        @apply w-full h-full object-cover;
+        @apply hidden sm:block;
     }
-    .auth-container__form{
+
+    .auth-container__form {
         @apply flex justify-center items-center;
     }
 }
