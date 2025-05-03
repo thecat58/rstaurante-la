@@ -23,26 +23,26 @@ class PedidoSerializer(serializers.ModelSerializer):
 class PlatoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Plato
-        fields = ['id_plato', 'nombre', 'descripcion', 'precio']
+        fields = '__all__'
 
 class MenuSerializer(serializers.ModelSerializer):
     platos = PlatoSerializer(source='plato_set', many=True)  # Relación con los platos
 
     class Meta:
         model = Menu
-        fields = ['id_menu', 'nombre', 'descripcion', 'platos']
+        fields = '__all__'
 
 class PermissionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Permission
-        fields = ['id', 'name', 'description']
+        fields = '__all__'
 
 class RoleSerializer(serializers.ModelSerializer):
     permissions = PermissionSerializer(many=True, read_only=True)
 
     class Meta:
         model = Role
-        fields = ['id', 'name', 'description', 'permissions']
+        fields = '__all__'
 
 class UserSerializer(serializers.ModelSerializer):
     roles = RoleSerializer(many=True, read_only=True)
@@ -50,4 +50,4 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['id', 'username', 'email', 'roles', 'permissions']
+        fields = '__all__'

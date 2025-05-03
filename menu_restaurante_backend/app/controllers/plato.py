@@ -34,7 +34,7 @@ class PlatoView(APIView):
         except Exception as e:
             return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
-    def get(self, plato_id=None):
+    def get(self, request, plato_id=None):
         """
         Obtener uno o todos los platos.
         """
