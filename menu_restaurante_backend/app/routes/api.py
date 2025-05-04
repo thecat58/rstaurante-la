@@ -1,5 +1,5 @@
 from django.urls import path
-from app.controllers import users, mesa, menuC, plato,pedido, login,Logout,detallefactura
+from app.controllers import users, mesa, menuC, plato,pedido, login,Logout,detallefactura,factura
 from django.urls import path # type: ignore
 
 urlpatterns = [
@@ -17,4 +17,7 @@ urlpatterns = [
     path('detallefactura/', detallefactura.DetalleFacturClass.as_view(), name='detallefactura_list'),
     path('detallefactura/<int:detalle_id>/', detallefactura.DetalleFacturClass.as_view(), name='detallefactura_detail'),  # Para obtener un detalle específico
     path('detallefactura/<int:detalle_id>/', detallefactura.DetalleFacturClass.as_view(), name='delete_detalle_factura'),
+    path('facturas/', factura.FacturaClass.as_view(), name='facturas'),  
+    path('facturas/<int:factura_id>/', factura.FacturaClass.as_view(), name='factura_detail'),
+
 ]
