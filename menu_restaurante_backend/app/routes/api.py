@@ -1,5 +1,5 @@
 from django.urls import path
-from app.controllers import users, mesa, menuC, plato,pedido, login,Logout
+from app.controllers import users, mesa, menuC, plato,pedido, login,Logout,detallefactura
 
 urlpatterns = [
     path('login/', login.LoginView.as_view(), name='login'),
@@ -10,4 +10,6 @@ urlpatterns = [
     path('plato/', plato.PlatoView.as_view(), name='plato'),
     path('pedido/', pedido.PedidoView.as_view(), name='create_pedido'),  # Para crear un pedido
     path('pedido/<int:pedido_id>/',pedido.PedidoView.as_view(), name='get_or_delete_pedido'),  # Para obtener o eliminar un pedido
+    path('detallefactura/', detallefactura.detallefacturaView.as_view(), name='detallefactura'),
+
 ]
