@@ -32,19 +32,46 @@ class Mesaclass(APIView):
         except Exception as e:
             return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
-    def put(self, request):
-        mesa_id = request.data.get('id')
+    def put(self, request, *args, **kwargs):
+        """
+        Actualizar una mesa específica.
+        """
+        mesa_id = kwargs.get('mesa_id')  # Obtener mesa_id desde kwargs
         if not mesa_id:
             return Response({'error': 'Id de la mesa no proporcionado'}, status=status.HTTP_400_BAD_REQUEST)
         try:
-            mesa = Mesa.objects.get(id=mesa_id)
-            mesa.numero_mesa = request.data.get('numero_mesa', mesa.numero_mesa)
+            mesa = Mesa.objects.get(id_mesa=mesa_id)
+
+            # Validar numero_mesa
+            numero_mesa = request.data.get('numero_mesa')
+            if numero_mesa and not str(numero_mesa).isdigit():
+                return Response({'error': 'El número de mesa debe ser un número válido'}, status=status.HTTP_400_BAD_REQUEST)
+
+            mesa.numero_mesa = numero_mesa if numero_mesa else mesa.numero_mesa
             mesa.qr_code = request.data.get('qr_code', mesa.qr_code)
-            mesa.colorQr = request.data.get('colorQr', mesa.colorQr)  # Actualizar el color si se proporciona
-            mesa.descripcion = request.data.get('descripcion', mesa.descripcion)  # Actualizar la descripción si se proporciona
+            mesa.colorQr = request.data.get('colorQr', mesa.colorQr)
+            mesa.descripcion = request.data.get('descripcion', mesa.descripcion)
             mesa.save()
+
             serializer = MesaSerializer(mesa)
             return Response(serializer.data, status=status.HTTP_200_OK)
+        except Mesa.DoesNotExist:
+            return Response({'error': 'Mesa no encontrada'}, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+        
+
+    def delete(self, request, *args, **kwargs):
+        """
+        Eliminar una mesa específica.
+        """
+        mesa_id = kwargs.get('mesa_id')  # Obtener mesa_id desde kwargs
+        if not mesa_id:
+            return Response({'error': 'El ID de la mesa es requerido'}, status=status.HTTP_400_BAD_REQUEST)
+        try:
+            mesa = Mesa.objects.get(id_mesa=mesa_id)
+            mesa.delete()
+            return Response({'message': 'Mesa eliminada correctamente'}, status=status.HTTP_200_OK)
         except Mesa.DoesNotExist:
             return Response({'error': 'Mesa no encontrada'}, status=status.HTTP_404_NOT_FOUND)
         except Exception as e:

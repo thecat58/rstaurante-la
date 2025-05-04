@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'corsheaders',  
 
 ]
+APPEND_SLASH = False
 
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',  # Agrega esta línea
