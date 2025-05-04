@@ -27,6 +27,6 @@ export class MesasService {
 
   // Eliminar una mesa
   deleteMesa(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.url}/mesa/${id}/`);
+    return this.http.delete<void>(`${this.url}/mesaD/${id}/`);
   }
 }

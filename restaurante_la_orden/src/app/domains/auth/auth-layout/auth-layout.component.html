@@ -3,5 +3,14 @@
     <section class="auth-container__form">
       <router-outlet></router-outlet>
     </section>
+    <nz-layout>
+      <!-- <nz-sider [(nzCollapsed)]="sidebarCollapsed" nzCollapsible> -->
+          <app-sider-nav-bar [collapsed]="sidebarCollapsed"></app-sider-nav-bar>
+      <!-- </nz-sider> -->
+      <nz-content>
+          <nz-breadcrumb nzSeparator=">" [nzAutoGenerate]="true"></nz-breadcrumb>
+          <router-outlet></router-outlet>
+      </nz-content>
+  </nz-layout>
   </main>
   

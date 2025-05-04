@@ -3,7 +3,7 @@
   <!-- Botón agregar mesa -->
   <div class="flex justify-end mb-6">
     <button (click)="openModal()"
-      class="mr-80 flex items-center gap-2 bg-[#FFA500] text-white px-5 py-2 rounded-full hover:bg-orange-600 transition">
+      class="flex items-center gap-2 bg-[#FFA500] text-white px-5 py-2 rounded-full hover:bg-orange-600 transition">
       <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
            stroke="currentColor" stroke-width="2">
         <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/>
@@ -13,13 +13,13 @@
   </div>
 
   <!-- Grid de tarjetas de mesas -->
-  <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-6">
+  <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-8">
     <div *ngFor="let mesa of mesas; let i = index"
-      class="flex items-center p-4 rounded-3xl shadow-md min-w-[500px] max-w-[500px] cursor-pointer transition-transform transform hover:scale-105 relative"
+      class="flex flex-col items-center p-6 rounded-3xl shadow-md min-w-[300px] max-w-[400px] cursor-pointer transition-transform transform hover:scale-105 relative"
       [ngClass]="{'bg-[#003366] text-white': i % 2 === 0, 'bg-[#F1E1C6] text-gray-800': i % 2 !== 0}">
       
       <!-- Botón eliminar (posición absoluta arriba a la derecha) -->
-      <button (click)="eliminarMesa(i)"
+      <button (click)="eliminarMesa(mesa.id_mesa)"
         class="absolute top-3 right-3 bg-red-500 hover:bg-red-600 text-white rounded-full p-2 transition">
         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none"
           viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -29,19 +29,20 @@
       </button>
   
       <!-- QR Code -->
-      <div class="bg-white p-2 rounded">
-        <div class="w-28 h-28 flex items-center justify-center">
+      <div class="bg-white p-4 rounded mb-4">
+        <div class="w-36 h-36 flex items-center justify-center">
           <nz-qrcode [nzValue]="mesa | urlMesa" [nzColor]="mesa.colorQr"></nz-qrcode>
         </div>
       </div>
   
       <!-- Info de la mesa -->
-      <div class="ml-4 flex-1">
-        <div class="flex justify-between items-start">
-          <h2 class="text-lg font-bold">MESA {{ mesa.numero_mesa }}</h2>
-          <p class="text-sm mt-2">{{ mesa.descripcion }}</p>
-        </div>
-        <!-- <p class="text-sm mt-2">{{ mesa.descripcion }}</p> -->
+      <div class="text-center">
+        <h2 class="text-xl font-bold">MESA {{ mesa.numero_mesa }}</h2>
+        <p class="text-sm mt-2">{{ mesa.descripcion }}</p>
+        <button (click)="openModal(mesa)"
+          class="mt-4 bg-blue-500 text-white px-4 py-2 rounded-full hover:bg-blue-600 transition">
+          Editar Mesa
+        </button>
       </div>
     </div>
   </div>
@@ -63,28 +64,24 @@
   
       <!-- Info y opciones -->
       <div class="flex-1 text-white">
-        <h2 class="text-2xl font-bold text-[#FFA500] mb-2">MESA</h2>
-      <form [formGroup]="mesaForm" (ngSubmit)="agregarMesa()">
-          <input type="number" formControlName="numero" placeholder="Numero"
+        <h2 class="text-2xl font-bold text-[#FFA500] mb-2">{{ modalMode === 'create' ? 'Nueva Mesa' : 'Actualizar Mesa' }}</h2>
+        <form [formGroup]="mesaForm" (ngSubmit)="modalMode === 'create' ? agregarMesa() : actualizarMesa()">
+          <input type="number" formControlName="numero" placeholder="Número de Mesa"
                  class="text-black w-full pl-10 p-3 rounded-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-orange-400 mb-4">
-          <input type="text" formControlName="descripcion" placeholder="Descripcion"
+          <input type="text" formControlName="descripcion" placeholder="Descripción"
                  class="text-black w-full pl-10 p-3 rounded-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-orange-400 mb-4">
   
           <div class="mb-4">
             <span class="text-[#FFA500] font-semibold">Personaliza tu QR:</span>
             <div class="flex gap-2 mt-2">
-              <input formControlName="color" type="color" name="" id="">
+              <input formControlName="color" type="color" class="w-10 h-10 cursor-pointer">
             </div>
           </div>
   
           <div class="flex gap-3 mt-4">
-            <button type="button" (click)="descargarQR()"
-                    class="bg-[#FFA500] text-white font-semibold px-4 py-2 rounded-full hover:bg-orange-600 transition">
-              Descargar QR
-            </button>
             <button type="submit"
                     class="bg-[#F1E1C6] text-black font-semibold px-4 py-2 rounded-full hover:bg-gray-300 transition">
-              Guardar Mesa
+              {{ modalMode === 'create' ? 'Guardar Mesa' : 'Actualizar Mesa' }}
             </button>
           </div>
         </form>

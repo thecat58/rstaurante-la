@@ -1,0 +1,5 @@
+<ul class="side-menu" nz-menu nzMode="inline">
+    @for (opcion of opciones_menu; track $index) {
+        <app-menu-item [route]="opcion" [path]="['/dashboard',opcion.path!]" [collapsed]="collapsed"></app-menu-item>
+    }
+</ul>
