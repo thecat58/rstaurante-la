@@ -55,4 +55,4 @@ class UserSerializer(serializers.ModelSerializer):
 class DetalleFacturaSerializer(serializers.ModelSerializer):
     class Meta:
         model = DetalleFactura
-        fields = '__all__'
+        fields = ['id_detalle_factura', 'cantidad', 'id_factura', 'plato_id']  # Solo campos existentes
