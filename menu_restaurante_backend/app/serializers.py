@@ -50,4 +50,9 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
+        fields = ['id', 'username', 'email', 'roles', 'permissions']
+
+class DetalleFacturaSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = DetalleFactura
         fields = '__all__'
