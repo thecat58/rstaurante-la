@@ -9,7 +9,9 @@ import { Observable } from 'rxjs';
 export class MenuService {
 
   private http = inject(HttpClient);
+
   private url = `api`;
+  
   // Obtener todas las platos
   getplatos(): Observable<MenuModel[]> {
     return this.http.get<MenuModel[]>(`${this.url}/plato/`);

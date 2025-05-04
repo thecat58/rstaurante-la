@@ -28,7 +28,7 @@ class PlatoView(APIView):
 
             # Serializar y devolver el plato creado
             serializer = PlatoSerializer(plato)
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+            return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
         except Menu.DoesNotExist:
             return Response({'error': 'Menú no encontrado'}, status=status.HTTP_404_NOT_FOUND)
         except Exception as e:
