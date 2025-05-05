@@ -25,7 +25,7 @@ export const routes: Routes = [
         path: 'pdf',
         title: 'Menú',
         loadComponent: () =>
-            import('@domains/pagues/facturas/facturas.component').then(m => m.FacturasComponent)
+            import('@domains/pagues/facturasPdf/facturas.component').then(m => m.FacturasComponent)
     },
     {
         path: 'facturas',
