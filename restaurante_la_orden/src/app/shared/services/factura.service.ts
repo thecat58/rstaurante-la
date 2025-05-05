@@ -13,7 +13,7 @@ import { Factura } from '@shared/models/factura.model';
 export class FacturaService {
   private apiUrl = 'http://localhost:8000/api/facturas/'; // Ajusta esta URL según tu backend
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   // Obtener todas las facturas
   getFacturas(): Observable<Factura[]> {
@@ -28,47 +28,70 @@ export class FacturaService {
   // Generar PDF
   // Generar PDF
   generarPDF(pedido: any): void {
-    const doc = new jsPDF();
-  
-    // Título
-    doc.setFontSize(18);
-    doc.setFont('helvetica', 'bold');
-    doc.text('FACTURA', 160, 20);
-  
-    // Fecha
-    doc.setFontSize(12);
-    doc.setFont('helvetica', 'normal');
-    const fecha = new Date(pedido.fecha_hora).toLocaleDateString();
-    doc.text(`Fecha: ${fecha}`, 160, 30);
+    const img = new Image();
+    img.src = '/logos/logo2.png'; // Ruta relativa desde `public/`
 
-    // Información del pedido
-    doc.setFontSize(5);
-    doc.setFont('helvetica', 'normal');
+    img.onload = () => {
+      const canvas = document.createElement('canvas');
+      canvas.width = img.width;
+      canvas.height = img.height;
 
-    // Tabla con detalles
-    autoTable(doc, {
-      startY: 40,
-      head: [['DESCRIPCIÓN', 'CANTIDAD', 'PRECIO (COP)', 'IMPORTE (COP)']],
-      body: pedido.detalles.map((detalle: any) => [
-        detalle.descripcion,
-        detalle.cantidad,
-        `$${detalle.precio.toFixed(2)}`,  // Muestra el precio en COP
-        `$${(detalle.cantidad * detalle.precio).toFixed(2)}`  // Muestra el importe en COP
-      ]),
-      theme: 'grid',
-      styles: { font: 'helvetica', fontSize: 10, halign: 'center' },
-      headStyles: { fillColor: [211, 211, 211], textColor: [0, 0, 0], fontStyle: 'bold' }
-    });
+      const ctx = canvas.getContext('2d');
+      if (!ctx) return;
 
-    // Total en pesos colombianos
-    const finalY = (doc as any).lastAutoTable.finalY;
-    const total = pedido.detalles.reduce((acc: number, d: any) => acc + (d.cantidad * d.precio), 0);
-    doc.setFontSize(12);
-    doc.setFont('helvetica', 'bold');
-    doc.text('TOTAL A PAGAR (COP):', 140, finalY + 10);
-    doc.setFontSize(14);
-    doc.text(`$${total.toFixed(2)}`, 180, finalY + 20);
-  
-    doc.output('dataurlnewwindow');
+      ctx.drawImage(img, 0, 0);
+      const imgData = canvas.toDataURL('image/png');
+
+      const doc = new jsPDF();
+
+      // Agregar logo
+      doc.addImage(imgData, 'PNG', 10, 10, 40, 10);
+
+      // Título
+      doc.setFontSize(18);
+      doc.setFont('helvetica', 'bold');
+      doc.text('FACTURA', 160, 20);
+
+      // Fecha y detalles
+      doc.setFontSize(12);
+      doc.setFont('helvetica', 'normal');
+      const fecha = new Date(pedido.fecha_hora).toLocaleDateString();
+      doc.text(`Fecha: ${fecha}`, 20, 40);
+      doc.text(`ID Pedido: ${pedido.id_pedido}`, 20, 48);
+      doc.text(`Mesa: ${pedido.mesa}`, 20, 56);
+      doc.text(`Estado: ${pedido.estado}`, 20, 64);
+
+      // Tabla
+      autoTable(doc, {
+        startY: 75,
+        head: [['PLATO', 'DESCRIPCIÓN', 'CANTIDAD', 'PRECIO (COP)', 'IMPORTE (COP)']],
+        body: pedido.platos.map((detalle: any) => [
+          detalle.plato.nombre,
+          detalle.plato.descripcion,
+          detalle.cantidad,
+          `$${parseFloat(detalle.plato.precio).toFixed(2)}`,
+          `$${(detalle.cantidad * parseFloat(detalle.plato.precio)).toFixed(2)}`
+        ]),
+        theme: 'grid',
+        styles: { font: 'helvetica', fontSize: 10, halign: 'center' },
+        headStyles: { fillColor: [211, 211, 211], textColor: [0, 0, 0], fontStyle: 'bold' }
+      });
+
+      // Total
+      const total = pedido.platos.reduce((acc: number, item: any) => {
+        return acc + item.cantidad * parseFloat(item.plato.precio);
+      }, 0);
+
+      const finalY = (doc as any).lastAutoTable.finalY;
+      doc.setFontSize(12);
+      doc.setFont('helvetica', 'bold');
+      doc.text('TOTAL A PAGAR (COP):', 140, finalY + 10);
+      doc.setFontSize(14);
+      doc.text(`$${total.toFixed(2)}`, 180, finalY + 20);
+
+      doc.output('dataurlnewwindow');
+    };
   }
+
+
 }
