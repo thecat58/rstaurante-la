@@ -1,0 +1,2 @@
+ng g s shared/services/pedido
+ng generate component domains/pagues/pedido
