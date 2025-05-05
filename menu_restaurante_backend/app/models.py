@@ -42,7 +42,6 @@ class Pedido(models.Model):
     estado = models.CharField(max_length=255)
     # cliente_id = models.IntegerField(blank=True, null=True)
     mesa = models.ForeignKey(Mesa, models.DO_NOTHING, blank=True, null=True)
-    plato = models.ForeignKey(Plato, models.DO_NOTHING, blank=True, null=True)
     cantidad = models.IntegerField(blank=True, null=True)
     
     class Meta:
