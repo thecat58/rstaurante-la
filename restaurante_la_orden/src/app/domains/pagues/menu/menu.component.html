@@ -2,7 +2,7 @@
 
 <div class="flex flex-col gap-6">
   <div *ngFor="let plato of platos" class="bg-[#f1e1c6] rounded-3xl p-4 flex items-center gap-4">
-    <!-- <img [src]="plato.imagen" alt="plato" class="w-24 h-24 object-cover rounded-xl"> -->
+    <img [src]="getSafeUrl(plato.foto !!)" alt="Imagen del plato" class="w-44 h-40 object-cover rounded-lg">
     
     <div class="flex-1 text-left">
       <div class="text-xl font-bold text-[#003366]">{{ plato.nombre }}</div>

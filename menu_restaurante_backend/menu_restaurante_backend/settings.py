@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 
 from pathlib import Path
 from datetime import timedelta
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -44,6 +45,12 @@ INSTALLED_APPS = [
 
 ]
 APPEND_SLASH = False
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'public', 'img')  # guarda en restaurante_la_orden/public/img
+
+# Si aún no lo tienes:
+STATIC_URL = '/static/'
 
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',  # Agrega esta línea

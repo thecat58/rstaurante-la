@@ -18,9 +18,20 @@ export class MenuService {
   }
 
   // Crear un nuevo plato en un menú
-  createPlato(menuId: number, data: MenuModel): Observable<MenuModel> {
-    return this.http.post<MenuModel>(`${this.url}/menu/${menuId}/plato/`, data);
+  createPlato(menuId: number, data: Partial<MenuModel>, file: File): Observable<any> {
+    const formData = new FormData();
+    formData.append('nombre', data.nombre || '');
+    formData.append('descripcion', data.descripcion || '');
+    formData.append('precio', String(data.precio));
+    formData.append('menu_id', String(menuId));
+  
+    if (file) {
+      formData.append('foto', file);
+    }
+  
+    return this.http.post(`${this.url}/plato/`, formData);
   }
+  
 
   // Editar un plato existente en un menú
   updatePlato(menuId: number, platoId: number, data: Partial<MenuModel>): Observable<MenuModel> {

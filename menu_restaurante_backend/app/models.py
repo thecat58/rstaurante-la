@@ -30,7 +30,7 @@ class Plato(models.Model):
     descripcion = models.TextField(blank=True, null=True)
     precio = models.DecimalField(max_digits=10, decimal_places=2)
     menu_id_menu = models.ForeignKey(Menu, models.DO_NOTHING, db_column='menu_id_menu')  # Relación con Menu
-    # foto= models.CharField(max_length=255, blank=True, null=True)
+    foto = models.ImageField(upload_to='', blank=True, null=True)  # Se guardará en public/img/
     class Meta:
         managed = True
         db_table = 'plato'

@@ -1,11 +1,14 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject, OnInit } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { RouterModule } from '@angular/router';
+import { environment } from '@env/environment.development';
 import { MenuModel } from '@shared/models/pato.model';
 import { PedidoModel } from '@shared/models/pedido.model';
 import { MenuService } from '@shared/services/menu.service';
 import { PedidoService } from '@shared/services/pedido.service';
+import { log } from 'ng-zorro-antd/core/logger';
 import { NzQRCodeModule } from 'ng-zorro-antd/qr-code';
 // Tu modelo importado correctamente
 
@@ -21,20 +24,32 @@ import { NzQRCodeModule } from 'ng-zorro-antd/qr-code';
   styleUrls: ['./menu.component.css']
 })
 export class MenuComponent implements OnInit {
+  backendUrl = environment.url; // URL del backend, por ejemplo: 'http://127.0.0.1:8000'
 
   platos: MenuModel[] = [];
   carrito: MenuModel[] = [];
   total = 0;
   items = 0;
 
-  constructor(private platoService: MenuService) { }
+  constructor(private platoService: MenuService,
+    private sanitizer: DomSanitizer
+
+  ) { }
   private pedidoService = inject(PedidoService);
 
 
   ngOnInit() {
-    this.platoService.getPlatos().subscribe((data: MenuModel[]) => {
-      // Al recibir los platos del servicio, les inicializamos 'cantidad' en 1
-      this.platos = data.map(plato => ({ ...plato, cantidad: 1 }));
+    this.platoService.getPlatos().subscribe((data: any[]) => {
+      // Encuentra el menú correspondiente y extrae los platos
+      const menu = data.find(m => m.id === 1); // Cambia "1" por el ID del menú que necesitas
+      if (menu && menu.platos) {
+        this.platos = menu.platos.map((plato: any) => ({
+          ...plato,
+          cantidad: 1 // Inicializa la cantidad en 1
+        }));
+      } else {
+        console.error('No se encontraron platos para el menú.');
+      }
     });
   }
 
@@ -90,4 +105,8 @@ export class MenuComponent implements OnInit {
       console.error('El carrito está vacío. No se puede continuar con la orden.');
     }
   }
+  getSafeUrl(foto: string): SafeUrl {
+    return this.sanitizer.bypassSecurityTrustUrl(this.backendUrl + foto);
+  }
+  
 }

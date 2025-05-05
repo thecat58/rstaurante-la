@@ -10,30 +10,31 @@ class PlatoView(APIView):
     """
 
     def post(self, request):
-        """
-        Crear un plato y relacionarlo con un menú existente.
-        """
-        data = request.data
         try:
-            # Obtener el menú relacionado
-            menu = Menu.objects.get(id_menu=data['menu_id'])
+            nombre = request.data['nombre']
+            descripcion = request.data.get('descripcion', '')
+            precio = request.data['precio']
+            menu_id = request.data['menu_id']
+            foto = request.FILES.get('foto')  # Aquí se recibe el archivo
 
-            # Crear el plato
+            menu = Menu.objects.get(id=menu_id)
+
             plato = Plato.objects.create(
-                nombre=data['nombre'],
-                descripcion=data.get('descripcion', ''),
-                precio=data['precio'],
+                nombre=nombre,
+                descripcion=descripcion,
+                precio=precio,
+                foto=foto,
                 menu_id_menu=menu
             )
 
-            # Serializar y devolver el plato creado
             serializer = PlatoSerializer(plato)
-            return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+
         except Menu.DoesNotExist:
             return Response({'error': 'Menú no encontrado'}, status=status.HTTP_404_NOT_FOUND)
         except Exception as e:
             return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
-
+        
     def get(self, request, plato_id=None):
         """
         Obtener uno o todos los platos.
@@ -67,6 +68,7 @@ class PlatoView(APIView):
             plato.nombre = data.get('nombre', plato.nombre)
             plato.descripcion = data.get('descripcion', plato.descripcion)
             plato.precio = data.get('precio', plato.precio)
+            plato.foto = data.get('foto', plato.foto)
 
             # Actualizar el menú relacionado si se proporciona
             if 'menu_id' in data:

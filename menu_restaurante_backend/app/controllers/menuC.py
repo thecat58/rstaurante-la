@@ -28,6 +28,7 @@ class MenuView(APIView):
                     nombre=plato_data['nombre'],
                     descripcion=plato_data.get('descripcion', ''),
                     precio=plato_data['precio'],
+                    foto=plato_data.get('foto', ''),  # Agregado campo foto
                     menu_id_menu=menu
                 )
 
@@ -43,12 +44,10 @@ class MenuView(APIView):
         """
         try:
             if menu_id:
-                # Obtener un menú específico
                 menu = Menu.objects.get(id_menu=menu_id)
                 serializer = MenuSerializer(menu)
                 return Response(serializer.data, status=status.HTTP_200_OK)
             else:
-                # Obtener todos los menús
                 menus = Menu.objects.all()
                 serializer = MenuSerializer(menus, many=True)
                 return Response(serializer.data, status=status.HTTP_200_OK)
@@ -63,29 +62,23 @@ class MenuView(APIView):
         """
         data = request.data
         try:
-            # Obtener el menú a actualizar
             menu = Menu.objects.get(id_menu=menu_id)
-
-            # Actualizar los campos del menú
             menu.nombre = data.get('nombre', menu.nombre)
             menu.descripcion = data.get('descripcion', menu.descripcion)
             menu.save()
 
-            # Actualizar los platos relacionados si se proporcionan
             if 'platos' in data:
-                # Eliminar los platos existentes relacionados con el menú
                 Plato.objects.filter(menu_id_menu=menu).delete()
 
-                # Crear los nuevos platos
                 for plato_data in data['platos']:
                     Plato.objects.create(
                         nombre=plato_data['nombre'],
                         descripcion=plato_data.get('descripcion', ''),
                         precio=plato_data['precio'],
+                        foto=plato_data.get('foto', ''),  # Agregado campo foto
                         menu_id_menu=menu
                     )
 
-            # Serializar y devolver el menú actualizado
             serializer = MenuSerializer(menu)
             return Response(serializer.data, status=status.HTTP_200_OK)
         except Menu.DoesNotExist:
@@ -98,7 +91,6 @@ class MenuView(APIView):
         Eliminar un menú existente.
         """
         try:
-            # Obtener el menú a eliminar
             menu = Menu.objects.get(id_menu=menu_id)
             menu.delete()
             return Response({'message': 'Menú eliminado exitosamente'}, status=status.HTTP_200_OK)

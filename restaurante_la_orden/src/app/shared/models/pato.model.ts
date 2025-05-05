@@ -3,7 +3,8 @@ export interface MenuModel {
     nombre: string;
     descripcion: string;
     precio: number;
-    imagen?: string;
+    foto?: string;
     cantidad?: number;
+    menu_id?: number;
   }
   

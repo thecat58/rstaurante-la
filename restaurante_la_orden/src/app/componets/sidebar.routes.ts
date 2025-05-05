@@ -25,6 +25,12 @@ export const side_routes:Routes = [
                 // data:{breadcrumb:'Estado de los aprendices sena',icon:'heroChartPie',roles:roles_reportes},
                 loadComponent:()=>import('@domains/pagues/plato/plato.component').then(c=>c.PlatoComponent),
             },
+            {
+                path:'mesas',
+                title:'Mesas',
+                // data:{breadcrumb:'Estado de los aprendices sena',icon:'heroChartPie',roles:roles_reportes},
+                loadComponent:()=>import('@domains/pagues/mesas/mesas.component').then(c=>c.MesasComponent),
+            },
 
            
         ]
