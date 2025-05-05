@@ -38,8 +38,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework', 
-    'app', 
+    
     'corsheaders',  
+    'app', 
 
 ]
 APPEND_SLASH = False

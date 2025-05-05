@@ -1,8 +1,6 @@
 from rest_framework import serializers
-from .models import *
-from rest_framework import serializers
 from .modeloP import *
-from app.models import Menu, Plato
+from app.models import DetalleFactura, Factura, Menu, Mesa, Pedido, PedidoPlato, Plato
 
 class FacturaSerializer(serializers.ModelSerializer):
     class Meta:
@@ -14,11 +12,41 @@ class MesaSerializer(serializers.ModelSerializer):
         model = Mesa
         fields = '__all__'
 
+class PedidoPlatoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PedidoPlato
+        fields = ['plato', 'cantidad']
 
 class PedidoSerializer(serializers.ModelSerializer):
+    platos = PedidoPlatoSerializer(many=True)
+
     class Meta:
         model = Pedido
-        fields = '__all__'
+        fields = ['id_pedido', 'fecha_hora', 'estado', 'mesa', 'platos']
+
+    def create(self, validated_data):
+        platos_data = validated_data.pop('platos')
+        pedido = Pedido.objects.create(**validated_data)
+        for plato_data in platos_data:
+            PedidoPlato.objects.create(pedido=pedido, **plato_data)
+        return pedido
+    
+    def update(self, instance, validated_data):
+        platos_data = validated_data.pop('platos', [])
+
+        # Actualiza los campos simples del pedido
+        instance.fecha_hora = validated_data.get('fecha_hora', instance.fecha_hora)
+        instance.estado = validated_data.get('estado', instance.estado)
+        instance.mesa = validated_data.get('mesa', instance.mesa)
+        instance.save()
+
+        # Elimina platos antiguos y crea los nuevos
+        PedidoPlato.objects.filter(pedido=instance).delete()
+        for plato_data in platos_data:
+            PedidoPlato.objects.create(pedido=instance, **plato_data)
+
+        return instance
+
 
 class PlatoSerializer(serializers.ModelSerializer):
     class Meta:

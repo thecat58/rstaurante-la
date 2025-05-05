@@ -55,8 +55,8 @@ export class LoginComponent {
 
     this.authService.login(value).subscribe({
         next: () => { 
-            console.log('Redirigiendo a /pagues/mesas');
-            this.router.navigate(['pagues/mesas']);
+            console.log('Redirigiendo a /pages/mesas');
+            this.router.navigate(['pages/mesas']);
             alert('Bienvenido');
         },
         error: (err) => {

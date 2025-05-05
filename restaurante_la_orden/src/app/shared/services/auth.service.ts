@@ -32,6 +32,18 @@ export class AuthService {
   });
   loading_user = signal<boolean>(true);
   
+  getUser(credentials: LoginDto) {
+    return this.http.post<{ access: string; refresh: string; user: PersonaModel }>(`${this.url}/login/`, credentials).pipe(
+      tap(response => {
+        // Guardar los tokens
+        this.token_service.setToken({ access: response.access, refresh: response.refresh });
+        this.usuario.set(response.user); // Establecer el usuario actual
+        this.loading_user.set(false); // Finalizar la carga del usuario
+      })
+    );
+  }
+
+
   login(credentials: LoginDto) {
     return this.http.post<{ access: string; refresh: string; user: PersonaModel }>(`${this.url}/login/`, credentials).pipe(
       tap(response => {
