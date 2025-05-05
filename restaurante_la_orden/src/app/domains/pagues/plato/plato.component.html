@@ -1,0 +1,63 @@
+<div class="p-4 space-y-4">
+    <!-- Encabezado -->
+    <div class="flex justify-between items-center">
+      <h2 class="text-2xl font-bold text-center w-full text-[#003366]">MENÚ</h2>
+      <div class="absolute right-4 flex gap-2">
+        <button (click)="abrirModal()" class="bg-[#003366] text-white rounded-full w-8 h-8 text-center">+</button>
+        <button class="bg-[#003366] text-white rounded-full w-8 h-8 text-center">🗑️</button>
+      </div>
+    </div>
+  
+    <!-- Lista de platos -->
+    <div *ngFor="let plato of platos; let i = index"
+         [ngClass]="i % 2 === 0 ? 'bg-yellow-100 text-black' : 'bg-[#003366] text-white'"
+         class="rounded-xl p-5 flex items-center gap-5 text-base h-56">
+      
+      <!-- Imagen del plato -->
+      <!-- <div class="w-16 h-16 bg-pink-100 rounded-lg"></div> -->
+  
+      <!-- Detalles -->
+      <div class="flex-1">
+        <div class="flex justify-between items-center mb-1">
+          <h3 class="text-lg font-semibold">{{ plato.nombre }}</h3>
+          <span class="text-sm font-bold">{{ plato.precio }} COP</span>
+        </div>
+        <p class="text-sm">{{ plato.descripcion }}</p>
+  
+        <!-- Controles -->
+        
+      </div>
+    </div>
+  
+
+    <!-- MODAL CREAR PLATO -->
+    <div *ngIf="mostrarModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <div class="bg-[#003366] rounded-xl p-6 w-[90%] max-w-md shadow-lg text-white">
+        <h3 class="text-xl font-bold mb-4">Crear Nuevo Plato</h3>
+  
+        <form (ngSubmit)="crearPlato()" #platoForm="ngForm" class="space-y-3 text-base">
+          <div>
+            <label class="block">Nombre</label>
+            <input [(ngModel)]="nuevoPlato.nombre" name="nombre" required class="w-full px-3 py-2 rounded border focus:outline-none text-black" />
+          </div>
+  
+          <div>
+            <label class="block">Descripción</label>
+            <textarea [(ngModel)]="nuevoPlato.descripcion" name="descripcion" required class="w-full px-3 py-2 rounded border focus:outline-none text-black"></textarea>
+          </div>
+  
+          <div>
+            <label class="block">Precio</label>
+            <input type="number" [(ngModel)]="nuevoPlato.precio" name="precio" required class="w-full px-3 py-2 rounded border focus:outline-none text-black" />
+          </div>
+  
+          <div class="flex justify-end gap-2 mt-4">
+            <button type="button" (click)="cerrarModal()" class="bg-yellow-300 px-4 py-2 rounded text-[#003366]">Cancelar</button>
+            <button type="submit" [disabled]="!platoForm.valid" class="bg-white text-[#003366] px-4 py-2 rounded">Crear</button>
+          </div>
+        </form>
+        <!-- Puedes aumentar el tamaño de la letra aquí usando clases como text-lg, text-xl, etc. -->
+      </div>
+    </div>
+  </div>
+  

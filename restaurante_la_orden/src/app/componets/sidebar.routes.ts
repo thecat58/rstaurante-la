@@ -19,6 +19,12 @@ export const side_routes:Routes = [
                 // data:{breadcrumb:'Estado de los aprendices sena',icon:'heroChartPie',roles:roles_reportes},
                 loadComponent:()=>import('@domains/pagues/pedido/pedido.component').then(c=>c.PedidoComponent),
             },
+            {
+                path:'plato',
+                title:'Platos',
+                // data:{breadcrumb:'Estado de los aprendices sena',icon:'heroChartPie',roles:roles_reportes},
+                loadComponent:()=>import('@domains/pagues/plato/plato.component').then(c=>c.PlatoComponent),
+            },
 
            
         ]

@@ -32,7 +32,7 @@ export class MenuComponent implements OnInit {
 
 
   ngOnInit() {
-    this.platoService.getplatos().subscribe((data: MenuModel[]) => {
+    this.platoService.getPlatos().subscribe((data: MenuModel[]) => {
       // Al recibir los platos del servicio, les inicializamos 'cantidad' en 1
       this.platos = data.map(plato => ({ ...plato, cantidad: 1 }));
     });
