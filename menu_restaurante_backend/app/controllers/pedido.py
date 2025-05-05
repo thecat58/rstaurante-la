@@ -6,55 +6,33 @@ from app.serializers import PedidoSerializer
 
 class PedidoView(APIView):
     """
-    API para manejar operaciones relacionadas con Pedidos.
-    """
+    API para manejar operaciones relacionadas con Pedidos.    """
 
     def post(self, request):
         """
-        Crear un pedido y asignar platos al mismo.
+        Crear un nuevo pedido.
         """
-        data = request.data
         try:
-            # Obtener la mesa asociada al pedido
-            mesa = Mesa.objects.get(id_mesa=data['mesa_id'])
-
-            # Crear el pedido
-            pedido = Pedido.objects.create(
-                fecha_hora=data['fecha_hora'],
-                estado=data['estado'],
-                mesa_id_mesa=mesa
-            )
-
-            # Agregar platos al pedido
-            platos = data.get('platos', [])
-            for plato_data in platos:
-                plato = Plato.objects.get(id_plato=plato_data['id_plato'])
-                PedidoPlato.objects.create(
-                    pedido=pedido,
-                    plato=plato,
-                    cantidad=plato_data['cantidad']
-                )
-
-            # Serializar y devolver el pedido creado
-            serializer = PedidoSerializer(pedido)
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        except Mesa.DoesNotExist:
-            return Response({'error': 'Mesa no encontrada'}, status=status.HTTP_404_NOT_FOUND)
-        except Plato.DoesNotExist:
-            return Response({'error': 'Plato no encontrado'}, status=status.HTTP_404_NOT_FOUND)
+            serializer = PedidoSerializer(data=request.data)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
-            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'error': f'Error al crear el pedido: {str(e)}'}, status=status.HTTP_400_BAD_REQUEST)
 
-    def get(self, request, pedido_id):
-        """
-        Obtener los detalles de un pedido específico.
-        """
-        try:
-            pedido = Pedido.objects.get(id_pedido=pedido_id)
-            serializer = PedidoSerializer(pedido)
+    def get(self, request, pedido_id=None):
+        if pedido_id:
+            try:
+                pedido = Pedido.objects.get(id_pedido=pedido_id)
+                serializer = PedidoSerializer(pedido)
+                return Response(serializer.data, status=status.HTTP_200_OK)
+            except Pedido.DoesNotExist:
+                return Response({'error': 'Pedido no encontrado'}, status=status.HTTP_404_NOT_FOUND)
+        else:
+            pedidos = Pedido.objects.all()
+            serializer = PedidoSerializer(pedidos, many=True)
             return Response(serializer.data, status=status.HTTP_200_OK)
-        except Pedido.DoesNotExist:
-            return Response({'error': 'Pedido no encontrado'}, status=status.HTTP_404_NOT_FOUND)
 
     def delete(self, request, pedido_id):
         """
@@ -66,3 +44,22 @@ class PedidoView(APIView):
             return Response({'message': 'Pedido eliminado exitosamente'}, status=status.HTTP_200_OK)
         except Pedido.DoesNotExist:
             return Response({'error': 'Pedido no encontrado'}, status=status.HTTP_404_NOT_FOUND)
+    
+    def put(self, request, pedido_id=None):
+        """
+        Actualizar un pedido existente.
+        """
+        if not pedido_id:
+            return Response({'error': 'El ID del pedido es requerido'}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            pedido = Pedido.objects.get(id_pedido=pedido_id)
+            serializer = PedidoSerializer(pedido, data=request.data, partial=True)  # `partial=True` permite actualizaciones parciales
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data, status=status.HTTP_200_OK)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        except Pedido.DoesNotExist:
+            return Response({'error': 'Pedido no encontrado'}, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            return Response({'error': f'Error al actualizar el pedido: {str(e)}'}, status=status.HTTP_400_BAD_REQUEST)

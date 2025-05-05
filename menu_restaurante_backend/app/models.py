@@ -18,12 +18,24 @@ class Menu(models.Model):
     restaurante_id = models.IntegerField(blank=True, null=True)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = 'menu'
+
+class Plato(models.Model):
+    id_plato = models.AutoField(primary_key=True)
+    nombre = models.CharField(max_length=100)
+    descripcion = models.TextField(blank=True, null=True)
+    precio = models.DecimalField(max_digits=10, decimal_places=2)
+    menu_id_menu = models.ForeignKey(Menu, models.DO_NOTHING, db_column='menu_id_menu')  # Relación con Menu
+    # foto= models.CharField(max_length=255, blank=True, null=True)
+    class Meta:
+        managed = True
+        db_table = 'plato'
 
 
 class Pedido(models.Model):
     id_pedido = models.AutoField(primary_key=True)
+    plato = models.ForeignKey(Plato, models.DO_NOTHING, blank=True, null=True, related_name='pedidos')
     fecha_hora = models.DateTimeField(blank=True, null=True)
     estado = models.CharField(max_length=255)
     cliente_id = models.IntegerField(blank=True, null=True)
@@ -44,22 +56,13 @@ class Factura(models.Model):
         db_table = 'factura'
 
 
-class Plato(models.Model):
-    id_plato = models.AutoField(primary_key=True)
-    nombre = models.CharField(max_length=100)
-    descripcion = models.TextField(blank=True, null=True)
-    precio = models.DecimalField(max_digits=10, decimal_places=2)
-    menu_id_menu = models.ForeignKey(Menu, models.DO_NOTHING, db_column='menu_id_menu')  # Relación con Menu
-    # foto= models.CharField(max_length=255, blank=True, null=True)
-    class Meta:
-        managed = False
-        db_table = 'plato'
-
 class DetalleFactura(models.Model):
     id_detalle_factura = models.AutoField(primary_key=True)
     cantidad = models.IntegerField()
     id_factura = models.ForeignKey(Factura, models.DO_NOTHING, db_column='id_factura')
-    plato_id = models.ForeignKey('Plato', models.DO_NOTHING, blank=True, null=True)
+    plato_id = models.ForeignKey('Plato', models.DO_NOTHING, db_column='plato_id', blank=True, null=True)
+
+
 
     class Meta:
         managed = True
@@ -84,6 +87,6 @@ class PedidoPlato(models.Model):
     cantidad = models.IntegerField(blank=True, null=True)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = 'pedidoplato'
         unique_together = ('pedido', 'plato')

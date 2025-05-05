@@ -11,18 +11,18 @@ class DetalleFacturClass(APIView):
         Obtener todos los detalles de factura o un detalle específico.
         """
         try:
-            if detalle_id:  # Si se proporciona un ID, obtener un detalle específico
+            if detalle_id:
                 detalle = DetalleFactura.objects.get(id_detalle_factura=detalle_id)
                 serializer = DetalleFacturaSerializer(detalle)
                 return Response(serializer.data, status=status.HTTP_200_OK)
-            else:  # Si no se proporciona un ID, obtener todos los detalles
+            else:
                 detalles = DetalleFactura.objects.all()
                 serializer = DetalleFacturaSerializer(detalles, many=True)
                 return Response(serializer.data, status=status.HTTP_200_OK)
         except DetalleFactura.DoesNotExist:
             return Response({'error': 'Detalle de factura no encontrado'}, status=status.HTTP_404_NOT_FOUND)
         except Exception as e:
-            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'error': f'Error al obtener los detalles de factura: {str(e)}'}, status=status.HTTP_400_BAD_REQUEST)
    
    
     def post(self, request):
