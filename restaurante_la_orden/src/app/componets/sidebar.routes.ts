@@ -13,6 +13,12 @@ export const side_routes:Routes = [
                 pathMatch:'full',
                 redirectTo:'modalidades'
             },
+            {
+                path:'pedidos',
+                title:'Pedidos',
+                // data:{breadcrumb:'Estado de los aprendices sena',icon:'heroChartPie',roles:roles_reportes},
+                loadComponent:()=>import('@domains/pagues/pedido/pedido.component').then(c=>c.PedidoComponent),
+            },
 
            
         ]

@@ -1,11 +1,13 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { MenuModel } from '@shared/models/pato.model';
+import { PedidoModel } from '@shared/models/pedido.model';
 import { MenuService } from '@shared/services/menu.service';
+import { PedidoService } from '@shared/services/pedido.service';
 import { NzQRCodeModule } from 'ng-zorro-antd/qr-code';
-       // Tu modelo importado correctamente
+// Tu modelo importado correctamente
 
 @Component({
   selector: 'app-menu',
@@ -25,7 +27,9 @@ export class MenuComponent implements OnInit {
   total = 0;
   items = 0;
 
-  constructor(private platoService: MenuService) {}
+  constructor(private platoService: MenuService) { }
+  private pedidoService = inject(PedidoService);
+
 
   ngOnInit() {
     this.platoService.getplatos().subscribe((data: MenuModel[]) => {
@@ -67,7 +71,23 @@ export class MenuComponent implements OnInit {
   }
 
   continuarOrden() {
-    console.log('Orden enviada', this.carrito);
-    // Aquí podrías redirigir o enviar el carrito al backend
+    if (this.carrito.length > 0) {
+      const nuevoPedido: PedidoModel = {
+        fecha_hora: new Date().toISOString(), // Fecha y hora actual en formato ISO
+        estado: 'En preparación', // Estado fijo
+        mesa: 1, // Mesa fija
+        platos: this.carrito.map(plato => ({
+          plato: plato.id_plato,
+          cantidad: plato.cantidad ?? 1
+        })) // Mapeo de los platos seleccionados
+      };
+  
+      this.pedidoService.createPedido(nuevoPedido).subscribe((pedido) => {
+        alert('Pedido realizado con éxito!');
+        this.cancelarOrden(); // Limpia el carrito después de enviar el pedido
+      });
+    } else {
+      console.error('El carrito está vacío. No se puede continuar con la orden.');
+    }
   }
 }

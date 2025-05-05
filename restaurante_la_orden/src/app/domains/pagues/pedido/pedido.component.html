@@ -1,0 +1,60 @@
+<div class="p-4">
+  <!-- Filtros -->
+  <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 gap-4">
+    <div class="flex flex-wrap gap-2 items-center">
+      <input type="text" placeholder="Buscar pedido..." [(ngModel)]="search" (ngModelChange)="filtrarPedidos()"
+        class="px-4 py-2 rounded-full border border-gray-300 w-full sm:w-64 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+
+      <select [(ngModel)]="selectedMesa" (ngModelChange)="filtrarPedidos()"
+        class="px-4 py-2 rounded-full border border-gray-300">
+        <option value="">Mesa</option>
+        <option *ngFor="let mesa of mesas" [value]="mesa">{{ mesa }}</option>
+      </select>
+
+      <input type="date" [(ngModel)]="selectedFecha" (ngModelChange)="filtrarPedidos()"
+        class="px-4 py-2 rounded-full border border-gray-300" />
+    </div>
+
+    <div class="flex gap-2 justify-end">
+      <button class="bg-blue-900 text-white px-4 py-2 rounded-full text-lg">＋</button>
+      <button class="bg-blue-900 text-white px-4 py-2 rounded-full text-lg">🗑</button>
+    </div>
+  </div>
+
+  <!-- Título -->
+  <h2 class="text-center font-bold text-2xl mb-4 text-blue-900">PEDIDOS</h2>
+
+  <!-- Cabecera de tabla -->
+  <div class="bg-blue-900 text-white font-semibold grid grid-cols-5 p-3 text-sm rounded-t-xl">
+    <div>Pedido</div>
+    <div>Fecha</div>
+    <div>Mesa</div>
+    <div>Estado</div>
+    <div>Acción</div>
+  </div>
+
+  <!-- Filas -->
+  <div *ngFor="let pedido of pedidosFiltrados"
+    class="grid grid-cols-5 p-3 text-sm bg-yellow-100 items-center border-b last:rounded-b-xl">
+    <div>{{ pedido.id_pedido }}</div>
+    <div>{{ pedido.fecha_hora | date:'dd/MM/yy' }}</div>
+    <div>{{ pedido.mesa }}</div>
+
+    <div class="flex items-center gap-2">
+      <span class="w-2 h-2 rounded-full"
+        [ngClass]="pedido.estado === 'Demorado' ? 'bg-red-500' : 'bg-green-500'"></span>
+      <select [(ngModel)]="pedido.estado" (change)="marcarCambio(pedido)" class="bg-transparent focus:outline-none">
+        <option>Demorado</option>
+        <option>Entregado</option>
+      </select>
+    </div>
+
+    <div class="flex gap-2 items-center">
+      <button (click)="verFactura(pedido)" class="text-blue-800 text-lg">👁</button>
+      <button *ngIf="pedido.id_pedido !== undefined && tieneCambios(pedido.id_pedido)"
+        (click)="actualizarPedido(pedido)" class="bg-green-500 text-white px-3 py-1 rounded-md text-sm">
+        Actualizar
+      </button>
+    </div>
+  </div>
+</div>
