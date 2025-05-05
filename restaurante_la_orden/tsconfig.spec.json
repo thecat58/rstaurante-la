@@ -8,6 +8,7 @@
       "jasmine"
     ]
   },
+  "types": ["html2pdf.js"],
   "include": [
     "src/**/*.spec.ts",
     "src/**/*.d.ts"

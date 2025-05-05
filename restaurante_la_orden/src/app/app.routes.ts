@@ -20,6 +20,13 @@ export const routes: Routes = [
         title: 'Menú',
         loadComponent: () =>
         import('@domains/pagues/menu/menu.component').then(m => m.MenuComponent)
+    },
+    {
+        path: 'pdf',
+        title: 'Menú',
+        loadComponent: () =>
+        import('@domains/pagues/facturas/facturas.component').then(m => m.FacturasComponent)
     }
+      
       
 ];
