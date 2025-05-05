@@ -12,10 +12,19 @@ class MesaSerializer(serializers.ModelSerializer):
         model = Mesa
         fields = '__all__'
 
+class PlatoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Plato
+        fields = '__all__'
+
 class PedidoPlatoSerializer(serializers.ModelSerializer):
+    plato = PlatoSerializer(read_only=True)
+    plato_id = serializers.PrimaryKeyRelatedField(queryset=Plato.objects.all(), source='plato', write_only=True)
+
     class Meta:
         model = PedidoPlato
-        fields = ['plato', 'cantidad']
+        fields = ['plato', 'plato_id', 'cantidad']
+
 
 class PedidoSerializer(serializers.ModelSerializer):
     platos = PedidoPlatoSerializer(many=True)
@@ -48,10 +57,7 @@ class PedidoSerializer(serializers.ModelSerializer):
         return instance
 
 
-class PlatoSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Plato
-        fields = '__all__'
+
 
 class MenuSerializer(serializers.ModelSerializer):
     platos = PlatoSerializer(source='plato_set', many=True)  # Relación con los platos

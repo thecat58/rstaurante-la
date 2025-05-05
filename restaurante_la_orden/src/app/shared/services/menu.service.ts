@@ -11,23 +11,24 @@ export class MenuService {
   private http = inject(HttpClient);
 
   private url = `api`;
-  
-  // Obtener todas las platos
-  getplatos(): Observable<MenuModel[]> {
-    return this.http.get<MenuModel[]>(`${this.url}/plato/`);
+
+  // Obtener todos los platos de un menú
+  getPlatos(): Observable<MenuModel[]> {
+    return this.http.get<MenuModel[]>(`${this.url}/menu/`);
   }
 
-  // Crear una nueva plato
-  createplato(data: MenuModel): Observable<MenuModel> {
-    return this.http.post<MenuModel>(`${this.url}/plato/`, data);
+  // Crear un nuevo plato en un menú
+  createPlato(menuId: number, data: MenuModel): Observable<MenuModel> {
+    return this.http.post<MenuModel>(`${this.url}/menu/${menuId}/plato/`, data);
   }
 
-  // Editar una plato existente
-  // updateplato(id: number, data: Partial<MenuModel>): Observable<MenuModel> {
-  //   return this.http.put<MenuModel>(`${this.url}/plato/${}/`, data);
-  // }
+  // Editar un plato existente en un menú
+  updatePlato(menuId: number, platoId: number, data: Partial<MenuModel>): Observable<MenuModel> {
+    return this.http.put<MenuModel>(`${this.url}/menu/${menuId}/plato/${platoId}/`, data);
+  }
 
-  // Eliminar una plato
-  deleteplato(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.url}/plato/${id}/`);
-  }}
+  // Eliminar un plato de un menú
+  deletePlato(menuId: number, platoId: number): Observable<void> {
+    return this.http.delete<void>(`${this.url}/menu/${menuId}/plato/${platoId}/`);
+  }
+}

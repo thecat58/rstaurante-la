@@ -10,6 +10,8 @@ urlpatterns = [
     path('mesa/<int:mesa_id>/', mesa.Mesaclass.as_view(), name='mesa_detail'),  # Para obtener, actualizar o eliminar una mesa específica
     path('mesaD/<int:mesa_id>/', mesa.Mesaclass.as_view(), name='delete_mesa'),  # Ruta para eliminar una mesa
     path('menu/', menuC.MenuView.as_view(), name='menu'),
+    path('menu/<int:menu_id>/', menuC.MenuView.as_view(), name='menu-detail'),
+    path('menu/<int:menu_id>/plato/<int:plato_id>/', menuC.MenuView.as_view(), name='plato-detail'),
     path('plato/', plato.PlatoView.as_view(), name='plato'),
     path('api/plato/<int:plato_id>/',  plato.PlatoView.as_view()),  # Para obtener un plato específico
     path('pedido/',pedido.PedidoView.as_view(), name='get'),  # Para obtener 
