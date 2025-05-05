@@ -50,11 +50,13 @@
     </div>
 
     <div class="flex gap-2 items-center">
-      <button (click)="generarPDF(pedido)" class="text-blue-800 text-lg">👁</button>
+      <button (click)="generarPDF(pedido)" class="ver-acciones-button"> Ver PDF </button>
       <button *ngIf="pedido.id_pedido !== undefined && tieneCambios(pedido.id_pedido)"
-        (click)="actualizarPedido(pedido)" class="bg-green-500 text-white px-3 py-1 rounded-md text-sm">
+        (click)="actualizarPedido(pedido)" class="ver-acciones-button">
         Actualizar
       </button>
     </div>
   </div>
 </div>
+
+<!-- class="bg-green-500 text-white px-3 py-1 rounded-md text-sm" -->
