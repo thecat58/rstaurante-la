@@ -1,5 +1,5 @@
 from django.urls import path
-from app.controllers import users, mesa, menuC, plato,pedido, login,Logout,detallefactura
+from app.controllers import users, mesa, menuC, plato,pedido, login,Logout,detallefactura,factura
 from django.urls import path # type: ignore
 
 urlpatterns = [
@@ -15,7 +15,11 @@ urlpatterns = [
     path('pedido/',pedido.PedidoView.as_view(), name='get'),  # Para obtener 
     path('pedidoU/<int:pedido_id>/', pedido.PedidoView.as_view(), name='pedido_update'),
     path('pedido/<int:pedido_id>/',pedido.PedidoView.as_view(), name='get_or_delete_pedido'),  # Para obtener o eliminar un pedido
-    path('detallefactura/', detallefactura.detallefacturaView.as_view(), name='detallefactura'),
+    path('detallefactura/', detallefactura.DetalleFacturClass.as_view(), name='detallefactura_list'),  # Para GET (todos) y POST
+    path('detallefactura/<int:detalle_id>/', detallefactura.DetalleFacturClass.as_view(), name='detallefactura_detail'),  # Para obtener un detalle específico
+    path('detallefactura/<int:detalle_id>/', detallefactura.DetalleFacturClass.as_view(), name='delete_detalle_factura'),
+    path('facturas/', factura.FacturaClass.as_view(), name='facturas'),  
+    path('facturas/<int:factura_id>/', factura.FacturaClass.as_view(), name='factura_detail'),
 
 
 

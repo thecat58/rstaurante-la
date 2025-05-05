@@ -7,8 +7,7 @@ from django.shortcuts import get_object_or_404
 
 class PedidoView(APIView):
     """
-    API para manejar operaciones relacionadas con Pedidos.
-    """
+    API para manejar operaciones relacionadas con Pedidos.    """
 
     def post(self, request):
         """

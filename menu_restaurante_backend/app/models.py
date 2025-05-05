@@ -19,6 +19,7 @@ class Menu(models.Model):
 
     class Meta:
         managed = True
+        managed = True
         db_table = 'menu'
 
 
@@ -36,6 +37,7 @@ class Plato(models.Model):
 
 class Pedido(models.Model):
     id_pedido = models.AutoField(primary_key=True)
+    plato = models.ForeignKey(Plato, models.DO_NOTHING, blank=True, null=True, related_name='pedidos')
     fecha_hora = models.DateTimeField(blank=True, null=True)
     estado = models.CharField(max_length=255)
     # cliente_id = models.IntegerField(blank=True, null=True)
@@ -61,7 +63,9 @@ class DetalleFactura(models.Model):
     id_detalle_factura = models.AutoField(primary_key=True)
     cantidad = models.IntegerField()
     id_factura = models.ForeignKey(Factura, models.DO_NOTHING, db_column='id_factura')
-    plato_id = models.ForeignKey('Plato', models.DO_NOTHING, blank=True, null=True)
+    plato_id = models.ForeignKey('Plato', models.DO_NOTHING, db_column='plato_id', blank=True, null=True)
+
+
 
     class Meta:
         managed = True
