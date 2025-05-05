@@ -11,10 +11,10 @@ export const routes: Routes = [
         loadChildren: ()=>import('@domains/auth/auth.routes').then(r=>r.routes)
     },
     {
-        path:'pagues/mesas',
-        title:'mesas',
-        loadComponent: ()=> import('@domains/pagues/mesas/mesas.component').then(c=>c.MesasComponent)
+        path:'pages',
+        loadChildren: ()=>import('@domains/layaut.routes').then(r=>r.routes)
     },
+    
     {
         path: 'mesa/:mesa_id/menu',
         title: 'Menú',

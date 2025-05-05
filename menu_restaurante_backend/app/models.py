@@ -19,7 +19,10 @@ class Menu(models.Model):
 
     class Meta:
         managed = True
+        managed = True
         db_table = 'menu'
+
+
 
 class Plato(models.Model):
     id_plato = models.AutoField(primary_key=True)
@@ -32,19 +35,19 @@ class Plato(models.Model):
         managed = True
         db_table = 'plato'
 
-
 class Pedido(models.Model):
     id_pedido = models.AutoField(primary_key=True)
     plato = models.ForeignKey(Plato, models.DO_NOTHING, blank=True, null=True, related_name='pedidos')
     fecha_hora = models.DateTimeField(blank=True, null=True)
     estado = models.CharField(max_length=255)
-    cliente_id = models.IntegerField(blank=True, null=True)
+    # cliente_id = models.IntegerField(blank=True, null=True)
     mesa = models.ForeignKey(Mesa, models.DO_NOTHING, blank=True, null=True)
-
+    plato = models.ForeignKey(Plato, models.DO_NOTHING, blank=True, null=True)
+    cantidad = models.IntegerField(blank=True, null=True)
+    
     class Meta:
         managed = True
         db_table = 'pedido'
-
 
 class Factura(models.Model):
     fecha = models.DateField()
@@ -82,11 +85,7 @@ class TipoPlato(models.Model):
 
 
 class PedidoPlato(models.Model):
-    pedido = models.ForeignKey(Pedido, models.DO_NOTHING, blank=True, null=True)
-    plato = models.ForeignKey(Plato, models.DO_NOTHING, blank=True, null=True)
-    cantidad = models.IntegerField(blank=True, null=True)
-
-    class Meta:
-        managed = True
-        db_table = 'pedidoplato'
-        unique_together = ('pedido', 'plato')
+    pedido = models.ForeignKey(Pedido, on_delete=models.CASCADE, related_name='platos')
+    plato = models.ForeignKey(Plato, on_delete=models.CASCADE)
+    cantidad = models.IntegerField()
+    

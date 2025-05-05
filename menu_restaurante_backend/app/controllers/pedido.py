@@ -1,8 +1,9 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from app.models import Pedido, Plato, PedidoPlato, Mesa
+from app.models import Pedido, PedidoPlato, Plato, Mesa
 from app.serializers import PedidoSerializer
+from django.shortcuts import get_object_or_404
 
 class PedidoView(APIView):
     """
@@ -10,56 +11,45 @@ class PedidoView(APIView):
 
     def post(self, request):
         """
-        Crear un nuevo pedido.
+        Crea un nuevo pedido.
         """
-        try:
-            serializer = PedidoSerializer(data=request.data)
-            if serializer.is_valid():
-                serializer.save()
-                return Response(serializer.data, status=status.HTTP_201_CREATED)
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-        except Exception as e:
-            return Response({'error': f'Error al crear el pedido: {str(e)}'}, status=status.HTTP_400_BAD_REQUEST)
+        serializer = PedidoSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def get(self, request, pedido_id=None):
+        """
+        Obtiene uno o varios pedidos.
+        """
         if pedido_id:
-            try:
-                pedido = Pedido.objects.get(id_pedido=pedido_id)
-                serializer = PedidoSerializer(pedido)
-                return Response(serializer.data, status=status.HTTP_200_OK)
-            except Pedido.DoesNotExist:
-                return Response({'error': 'Pedido no encontrado'}, status=status.HTTP_404_NOT_FOUND)
+            pedido = get_object_or_404(Pedido, pk=pedido_id)
+            serializer = PedidoSerializer(pedido)
+            return Response(serializer.data)
         else:
             pedidos = Pedido.objects.all()
             serializer = PedidoSerializer(pedidos, many=True)
-            return Response(serializer.data, status=status.HTTP_200_OK)
+            return Response(serializer.data)
 
-    def delete(self, request, pedido_id):
-        """
-        Eliminar un pedido.
-        """
-        try:
-            pedido = Pedido.objects.get(id_pedido=pedido_id)
-            pedido.delete()
-            return Response({'message': 'Pedido eliminado exitosamente'}, status=status.HTTP_200_OK)
-        except Pedido.DoesNotExist:
-            return Response({'error': 'Pedido no encontrado'}, status=status.HTTP_404_NOT_FOUND)
-    
-    def put(self, request, pedido_id=None):
-        """
-        Actualizar un pedido existente.
-        """
-        if not pedido_id:
-            return Response({'error': 'El ID del pedido es requerido'}, status=status.HTTP_400_BAD_REQUEST)
-
-        try:
-            pedido = Pedido.objects.get(id_pedido=pedido_id)
-            serializer = PedidoSerializer(pedido, data=request.data, partial=True)  # `partial=True` permite actualizaciones parciales
+    def put(self, request, pedido_id):
+            """
+            Actualiza un pedido existente, incluyendo sus platos.
+            """
+            pedido = get_object_or_404(Pedido, pk=pedido_id)
+            serializer = PedidoSerializer(pedido, data=request.data)
             if serializer.is_valid():
+                # Actualiza los campos del pedido
                 serializer.save()
-                return Response(serializer.data, status=status.HTTP_200_OK)
+
+                # Actualiza los platos: borra los anteriores y agrega los nuevos
+                PedidoPlato.objects.filter(pedido=pedido).delete()
+                platos_data = request.data.get("platos", [])
+                for plato_data in platos_data:
+                    PedidoPlato.objects.create(
+                        pedido=pedido,
+                        plato_id=plato_data["plato"],
+                        cantidad=plato_data["cantidad"]
+                    )
+                return Response(serializer.data)
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-        except Pedido.DoesNotExist:
-            return Response({'error': 'Pedido no encontrado'}, status=status.HTTP_404_NOT_FOUND)
-        except Exception as e:
-            return Response({'error': f'Error al actualizar el pedido: {str(e)}'}, status=status.HTTP_400_BAD_REQUEST)

@@ -13,7 +13,7 @@ import { side_routes } from '../sidebar.routes';
     NzMenuModule,
     MenuItemComponent
   ], 
-   templateUrl: './sider-nav-bar.component.html',
+  templateUrl: './sider-nav-bar.component.html',
   styleUrl: './sider-nav-bar.component.css'
 })
 export class SidebarNavBarComponent {

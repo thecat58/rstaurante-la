@@ -1,6 +1,8 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input, OnInit } from '@angular/core';
 import { Route, RouterModule } from '@angular/router';
+import { CanUseActionsDirective } from '@shared/directives/can-use-actions.directive';
+import { HasChildrenPipe } from '@shared/pipes/has-children.pipe';
 import { NzMenuModule } from 'ng-zorro-antd/menu';
 // import { heroAcademicCapSolid, heroHomeModernSolid, heroMapSolid, heroUserGroupSolid } from '@ng-icons/heroicons/solid';
 // import { lucideChartColumn, lucideCheckCheck, lucideGlobe, lucideGoal, lucideSchool, lucideTable2 } from '@ng-icons/lucide';
@@ -13,30 +15,15 @@ import { NzTypographyModule } from 'ng-zorro-antd/typography';
   imports: [
     CommonModule,
     NzMenuModule,
-    // NgIconComponent,
-    // HasChildrenPipe,
+    HasChildrenPipe,
     RouterModule,
     NzPopoverModule,
-    // CanUseActionsDirective,
-    NzTypographyModule
+    NzTypographyModule,
+    // CanUseActionsDirective
   ],
   templateUrl: './menu-item.component.html',
   styleUrl: './menu-item.component.css',
-  // viewProviders: [provideIcons({ 
-  //   heroAcademicCapSolid,
-  //   heroHomeModernSolid,
-  //   heroMapSolid,
-  //   heroChartPie,
-  //   lucideSchool,
-  //   simpleLevelsdotfyi,
-  //   heroUserGroupSolid,
-  //   heroLanguage,
-  //   lucideGoal,
-  //   lucideCheckCheck,
-  //   lucideTable2,
-  //   lucideGlobe,
-  //   lucideChartColumn
-  // })]
+
 })
 export class MenuItemComponent implements OnInit{
   @Input({required:true}) route:Route = {};
