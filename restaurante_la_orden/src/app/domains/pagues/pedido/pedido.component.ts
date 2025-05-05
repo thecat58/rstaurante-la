@@ -1,16 +1,18 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { PedidoModel } from '@shared/models/pedido.model';
 import { PedidoService } from '@shared/services/pedido.service';
+import { FacturaService } from '@shared/services/factura.service';
 import { NzQRCodeModule } from 'ng-zorro-antd/qr-code';
 
 @Component({
   selector: 'app-pedido',
-  imports: [CommonModule, FormsModule, ReactiveFormsModule, RouterModule, NzQRCodeModule,],
+  standalone: true,
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, RouterModule, NzQRCodeModule],
   templateUrl: './pedido.component.html',
-  styleUrl: './pedido.component.css'
+  styleUrls: ['./pedido.component.css']
 })
 export class PedidoComponent implements OnInit {
   pedidos: PedidoModel[] = [];
@@ -27,6 +29,7 @@ export class PedidoComponent implements OnInit {
   private router = inject(Router);
   private fb = inject(FormBuilder);
   private pedidoService = inject(PedidoService);
+  private facturaService = inject(FacturaService);
 
   ngOnInit() {
     this.cargarPedidos();
@@ -47,25 +50,25 @@ export class PedidoComponent implements OnInit {
     );
   }
 
-
   cambiarEstado(pedido: PedidoModel) {
     const nuevoEstado = pedido.estado === 'Entregado' ? 'Demorado' : 'Entregado';
     pedido.estado = nuevoEstado;
     this.cambiosPendientes[pedido.id_pedido!] = true;
   }
+
   marcarCambio(pedido: PedidoModel) {
     if (pedido.id_pedido !== undefined) {
       this.cambiosPendientes[pedido.id_pedido] = true;
     }
-  }  
+  }
 
   actualizarPedido(pedido: PedidoModel) {
     const datosActualizados: PedidoModel = {
-      ...pedido, // Copiamos todas las propiedades del pedido
+      ...pedido,
       estado: pedido.estado,
-      fecha_hora: pedido.fecha_hora || new Date().toISOString() // Asignar un valor por defecto si es undefined
+      fecha_hora: pedido.fecha_hora || new Date().toISOString()
     };
-  
+
     this.pedidoService.updatePedido(pedido.id_pedido!, datosActualizados).subscribe((pedidoActualizado) => {
       const index = this.pedidos.findIndex(p => p.id_pedido === pedido.id_pedido);
       if (index > -1) {
@@ -82,5 +85,24 @@ export class PedidoComponent implements OnInit {
   tieneCambios(id: number): boolean {
     return !!this.cambiosPendientes[id];
   }
-}
 
+  generarPDF(pedido: PedidoModel) {
+    // Validar que el pedido tenga platos
+    if (!pedido.platos || !Array.isArray(pedido.platos)) {
+      console.error('El pedido no tiene platos válidos:', pedido);
+      alert('No se puede generar el PDF porque los datos del pedido están incompletos.');
+      return;
+    }
+
+    // Convertir los platos a un formato adecuado para el PDF
+    const detalles = pedido.platos.map(plato => ({
+      descripcion: `Plato ID: ${plato.plato}`,
+      cantidad: plato.cantidad,
+      precio: 0 // Puedes agregar lógica para obtener el precio si está disponible
+    }));
+
+    // Llamar al servicio para generar el PDF
+    this.facturaService.generarPDF({ ...pedido, detalles });
+  }
+  
+}

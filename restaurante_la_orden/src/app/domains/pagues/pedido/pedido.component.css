@@ -1,0 +1,34 @@
+.acciones-pedidos {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: flex-end;
+  }
+  
+  .btn-accion {
+    background-color: #1e3a8a; 
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 8px; 
+    font-size: 1.125rem; 
+    border: none;
+    cursor: pointer;
+  }
+  
+  .btn-accion:hover {
+    background-color: #1c3a8a; 
+  }
+
+.ver-acciones-button {
+    background-color: #1e3a8a; /* Azul oscuro */
+    color: rgb(252, 248, 248); /* Texto negro */
+    border: none;
+    padding: 5px 10px;
+    border-radius:5px; /* Bordes redondeados */
+    cursor: pointer;
+    font-size: 14px; /* Tamaño del texto */ 
+  }
+  
+  .ver-acciones-button:hover {
+    background-color: #162c6a; /* Azul más oscuro al pasar el mouse */
+  }
+  
