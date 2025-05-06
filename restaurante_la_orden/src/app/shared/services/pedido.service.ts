@@ -24,13 +24,19 @@ export class PedidoService {
 
   // Editar una pedido existente
   updatePedido(id: number, datos: PedidoModel): Observable<PedidoModel> {
-    return this.http.put<PedidoModel>(`${this.apiUrl}/${id}/`, {
+    const payload = {
       id_pedido: id,
       fecha_hora: datos.fecha_hora,
       estado: datos.estado,
       mesa: datos.mesa,
-      platos: datos.platos  // 👈 esta línea es la clave
-    });
-  } 
+      platos: datos.platos.map((p: any) => ({
+        plato_id: p.plato?.id_plato ?? p.plato_id ?? p.plato, // ✔️ extrae id correcto según venga
+        cantidad: p.cantidad
+      }))
+    };
+    return this.http.put<PedidoModel>(`${this.apiUrl}/${id}/`, payload);
+  }
+  
+  
   
 }

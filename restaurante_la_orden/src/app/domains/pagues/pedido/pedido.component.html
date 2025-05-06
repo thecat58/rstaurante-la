@@ -39,24 +39,29 @@
     <div>{{ pedido.id_pedido }}</div>
     <div>{{ pedido.fecha_hora | date:'dd/MM/yy' }}</div>
     <div>{{ pedido.mesa }}</div>
-
     <div class="flex items-center gap-2">
-      <span class="w-2 h-2 rounded-full"
-        [ngClass]="pedido.estado === 'Demorado' ? 'bg-red-500' : 'bg-green-500'"></span>
+      <span class="w-2 h-2 rounded-full" [ngClass]="{
+          'bg-red-500': pedido.estado === 'Demorado',
+          'bg-green-500': pedido.estado === 'Entregado',
+          'bg-gray-500': !pedido.estado
+        }"></span>
       <select [(ngModel)]="pedido.estado" (change)="marcarCambio(pedido)" class="bg-transparent focus:outline-none">
-        <option>Demorado</option>
-        <option>Entregado</option>
+        <option [value]="pedido.estado" disabled selected hidden>{{ pedido.estado | titlecase }}</option>
+        <option value="Demorado">Demorado</option>
+        <option value="Entregado">Entregado</option>
       </select>
-    </div>
 
-    <div class="flex gap-2 items-center">
-      <button (click)="generarPDF(pedido)" class="ver-acciones-button"> Ver PDF </button>
-      <button *ngIf="pedido.id_pedido !== undefined && tieneCambios(pedido.id_pedido)"
-        (click)="actualizarPedido(pedido)" class="ver-acciones-button">
-        Actualizar
-      </button>
+
+
+
+      <div class="flex gap-2 items-center">
+        <button (click)="generarPDF(pedido)" class="ver-acciones-button"> Ver PDF </button>
+        <button *ngIf="pedido.id_pedido !== undefined && tieneCambios(pedido.id_pedido)"
+          (click)="actualizarPedido(pedido)" class="ver-acciones-button">
+          Actualizar
+        </button>
+      </div>
     </div>
   </div>
-</div>
 
-<!-- class="bg-green-500 text-white px-3 py-1 rounded-md text-sm" -->
+  <!-- class="bg-green-500 text-white px-3 py-1 rounded-md text-sm" -->
