@@ -1,5 +1,6 @@
 @if(route|hasChildren){
-    <ul class="sub-menu"   
+    <ul class="sub-menu"
+      *appCanUseActions="route.data?.['roles']"
         routerLinkActive="menu-item__active"
         [routerLinkActiveOptions]="{ exact: false }" 
         #rla="routerLinkActive" nz-submenu 
@@ -15,17 +16,18 @@
     
 }@else if(route.title){
     <a 
-        class="menu-item menu-item_anchor"
-        routerLinkActive="menu-item__active"
-        nz-menu-item
-        nzMatchRouter
-        nz-popover
-        [nzPopoverContent]="popOver"
-        [routerLink]="path"
-        >
-        @if (!collapsed) {
-            <span nz-typography> {{route.title}}</span>
-        }
+      *appCanUseActions="route.data?.['roles']"
+      class="menu-item menu-item_anchor"
+      routerLinkActive="menu-item__active"
+      nz-menu-item
+      nzMatchRouter
+      nz-popover
+      [nzPopoverContent]="popOver"
+      [routerLink]="path"
+      >
+      @if (!collapsed) {
+        <span nz-typography> {{route.title}}</span>
+      }
     </a>
 }
 
@@ -39,3 +41,9 @@
 <ng-template #popOver>
     <span>{{route.title}}</span>
 </ng-template>
+
+<!-- Solo para administrador -->
+<a *ngIf="isAdmin">Solo Administrador</a>
+
+<!-- Solo para mesero -->
+<a *ngIf="isMesero">Solo Mesero</a>

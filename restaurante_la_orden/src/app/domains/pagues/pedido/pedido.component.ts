@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject, OnInit } from '@angular/core';
-import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { PedidoModel } from '@shared/models/pedido.model';
 import { PedidoService } from '@shared/services/pedido.service';
@@ -15,6 +15,7 @@ import { NzQRCodeModule } from 'ng-zorro-antd/qr-code';
   styleUrls: ['./pedido.component.css']
 })
 export class PedidoComponent implements OnInit {
+  showModal = false;
   pedidos: PedidoModel[] = [];
   pedidosFiltrados: PedidoModel[] = [];
   mesas: number[] = [];
@@ -23,6 +24,9 @@ export class PedidoComponent implements OnInit {
   selectedMesa: string = '';
   selectedFecha: string = '';
   search: string = '';
+  modalMode: 'edit' = 'edit';
+  mesaForm: FormGroup;
+
 
   cambiosPendientes: { [id: number]: boolean } = {};
 
@@ -34,7 +38,13 @@ export class PedidoComponent implements OnInit {
   ngOnInit() {
     this.cargarPedidos();
   }
-
+  constructor() {
+    this.mesaForm = this.fb.group({
+      numero: ['', Validators.required],
+      descripcion: ['', Validators.required],
+      color: ['#000000', Validators.required],
+    });
+  }
   cargarPedidos() {
     this.pedidoService.getpedidos().subscribe((pedidos) => {
       this.pedidos = pedidos;
@@ -100,9 +110,27 @@ export class PedidoComponent implements OnInit {
       cantidad: plato.cantidad,
       precio: 0 // Puedes agregar lógica para obtener el precio si está disponible
     }));
+    console.log('Detalles para el PDF:', detalles);
+    console.log('Pedido para el PDF:', pedido);
+
+
 
     // Llamar al servicio para generar el PDF
     this.facturaService.generarPDF({ ...pedido, detalles });
   }
-  
+
+
+  openModal(pedido?: PedidoModel) {
+    this.showModal = true;
+
+
+  }
+  closeModal() {
+    this.showModal = false;
+
+  }
+
+  actualizarPedos() {
+
+  }
 }

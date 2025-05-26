@@ -48,25 +48,57 @@ export class LoginComponent {
     this.password_type = 'password';
     this.password_icon = 'heroEyeSlash';
   }
+submitForm() {
+  const { value } = this.form;
+  this.loading = true;
 
-  submitForm() {
-    const { value } = this.form;
-    this.loading = true;
+  this.authService.login(value).subscribe({
+    next: () => {
+      // Obtener los datos del usuario autenticado (roles y permisos)
+      this.authService.me().subscribe({
+        next: (user) => {
+          // Lista de permisos y rutas asociadas
+          const permisosRutas = [
+            { permiso: 'ver mesas', ruta: '/pages/mesas' },
+            { permiso: 'ver permisos', ruta: '/pages/gestion/persmisos' },
+            { permiso: 'ver pedidos', ruta: '/pages/gestion/pedidos' },
+            { permiso: 'ver platos', ruta: '/pages/gestion/plato' },
+            { permiso: 'ver usuarios', ruta: '/pages/gestion/usuarios' }
+          ];
 
-    this.authService.login(value).subscribe({
-        next: () => { 
-            console.log('Redirigiendo a /pages/mesas');
-            this.router.navigate(['pages/mesas']);
+          // Obtener todos los permisos del usuario (ajusta según tu modelo)
+          const permisosUsuario: string[] = [];
+          user.roles?.forEach((rol: any) => {
+            rol.permissions?.forEach((perm: any) => {
+              if (perm.name) permisosUsuario.push(perm.name.toLowerCase());
+            });
+          });
+
+          // Buscar la primera ruta a la que tiene permiso
+          const rutaPermitida = permisosRutas.find(pr =>
+            permisosUsuario.includes(pr.permiso)
+          );
+
+          if (rutaPermitida) {
+            this.router.navigate([rutaPermitida.ruta]);
             alert('Bienvenido');
+          } else {
+            alert('No tienes permisos para acceder a ninguna sección.');
+          }
         },
-        error: (err) => {
-            alert('Ocurrió un error: ' + (err.error?.message || 'Credenciales incorrectas'));
-            this.loading = false;
+        error: () => {
+          alert('No se pudieron obtener los permisos del usuario.');
         },
         complete: () => {
-            this.loading = false;
+          this.loading = false;
         }
-    });
-  }
+      });
+    },
+    error: (err) => {
+      alert('Ocurrió un error: ' + (err.error?.message || 'Credenciales incorrectas'));
+      this.loading = false;
+    }
+  });
+}
 
 }

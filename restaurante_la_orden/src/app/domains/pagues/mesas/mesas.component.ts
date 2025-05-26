@@ -101,7 +101,6 @@ openModal(mesa?: MesaModel) {
   }
 
   actualizarMesa() {
-    console.log("aklsmcklds");
     
     if (this.mesaForm.valid && this.selectedMesaId !== null) {
       console.log("aklsmcklds2");

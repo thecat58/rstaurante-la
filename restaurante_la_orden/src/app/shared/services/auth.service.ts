@@ -6,9 +6,11 @@ import { RegisterDto } from '@shared/dto/auth/register.dto';
 import { TokenModel } from '@shared/models/token.model';
 import { PersonaModel } from '@shared/models/persona.model';
 import { TokenService } from './token.service';
-import { map, switchMap, tap } from 'rxjs';
+import { map, Observable, switchMap, tap } from 'rxjs';
 import { PasswordConfirmDto, RequestPassChangeDto } from '@shared/dto/auth/change-password';
 import { MessageInfoModel } from '@shared/models/message-info.model';
+import { UsuarioModel } from '@shared/dto/auth/user.dto';
+import { PermissionModel, RolesModel } from '@shared/dto/auth/roles.dto';
 
 @Injectable({
   providedIn: 'root'
@@ -70,7 +72,15 @@ export class AuthService {
   refresh(token:RefreshDto){
     return this.http.post<TokenModel>(`${this.url}/login/refresh`,token);
   }
-
+  createUser(data: UsuarioModel): Observable<UsuarioModel>{
+    return this.http.post<UsuarioModel>(`${this.url}/users/`,data);
+  }
+  updateUser(id: number, data: Partial<UsuarioModel>): Observable<UsuarioModel> {
+    return this.http.put<UsuarioModel>(`${this.url}/userU/${id}/`, data);
+  }
+  getuser(): Observable<UsuarioModel[]>{
+    return this.http.get<UsuarioModel[]>(`${this.url}/users/`);
+  }
   logOut(token:RefreshDto){
     return this.http.post<MessageInfoModel>(`${this.url}/logout/`,token)
       .pipe(map((message)=>{
@@ -87,4 +97,16 @@ export class AuthService {
       }));
   }
 
+  getRoles(): Observable<RolesModel[]>{
+    return this.http.get<RolesModel[]>(`${this.url}/roles/`);
+  }
+  getpermisos(): Observable<PermissionModel[]>{
+    return this.http.get<PermissionModel[]>(`${this.url}/permisos/`);
+  }
+   createRoles(data: RolesModel): Observable<RolesModel>{
+    return this.http.post<RolesModel>(`${this.url}/roles/`,data);
+  }
+  updateRoles(id: number, data: Partial<RolesModel>): Observable<RolesModel> {
+    return this.http.put<RolesModel>(`${this.url}/userU/${id}/`, data);
+  }
 }

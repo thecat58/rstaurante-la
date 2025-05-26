@@ -1,0 +1,83 @@
+<div class="p-4">
+    <!-- Botón agregar rol -->
+    <div class="flex justify-end mb-6">
+        <button (click)="openModal()"
+            class="bg-blue-700 text-white px-5 py-2 rounded-full shadow-lg border border-blue-900 hover:bg-blue-900 hover:text-yellow-300 transition font-bold text-lg">
+            Nuevo Rol
+        </button>
+    </div>
+
+    <!-- Título -->
+    <h2 class="text-center font-bold text-2xl mb-4 text-blue-900">ROLES</h2>
+
+    <!-- Cabecera de tabla -->
+    <div class="bg-blue-900 text-white font-semibold grid grid-cols-3 p-3 text-sm rounded-t-xl">
+        <div>Nombre</div>
+        <div>Descripción</div>
+        <div>Acción</div>
+    </div>
+
+    <!-- Filas de roles -->
+    <div *ngFor="let rol of roles"
+        class="grid grid-cols-3 p-3 text-sm bg-yellow-100 items-center border-b last:rounded-b-xl">
+        <div>{{ rol.name }}</div>
+        <div>{{ rol.description }}</div>
+        <div class="flex justify-end gap-2 items-center">
+            <button (click)="openModal(rol)"
+                class="bg-blue-700 text-white px-4 py-1 rounded-full hover:bg-blue-900 transition font-semibold shadow">
+                Editar
+            </button>
+        </div>
+    </div>
+
+    <!-- Modal para crear/editar rol -->
+    <div *ngIf="showModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div class="bg-yellow-100 p-6 rounded-2xl shadow-lg w-full max-w-2xl flex flex-col items-center gap-6 relative">
+            <!-- Botón de cerrar (X) -->
+            <button (click)="closeModal()"
+                class="absolute top-4 right-4 text-white text-xl font-bold hover:text-gray-400 transition">
+                &times;
+            </button>
+
+            <!-- Formulario de rol -->
+            <div class="flex-1 text-white w-full">
+                <h2 class="text-2xl font-bold text-[#FFA500] mb-2">
+                    {{ modalMode === 'edit' ? 'Actualizar Rol' : 'Nuevo Rol' }}
+                </h2>
+                <form [formGroup]="roleForm" (ngSubmit)="modalMode === 'edit' ? actualizarRole() : agregarRole()">
+                    <input type="text" formControlName="name" placeholder="Nombre del Rol"
+                        class="text-black w-full pl-10 p-3 rounded-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-orange-400 mb-4">
+                    <input type="text" formControlName="description" placeholder="Descripción"
+                        class="text-black w-full pl-10 p-3 rounded-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-orange-400 mb-4">
+
+                    <div class="mb-4">
+                        <span class="text-[#FFA500] font-semibold">Permisos:</span>
+                        <div class="flex flex-wrap gap-4 mt-2">
+                            <label *ngFor="let permiso of permisos" class="flex items-center gap-2">
+                                <input type="checkbox" [value]="permiso.id"
+                                    (change)="onPermisoChange($event, permiso.id!)"
+                                    [checked]="permiso.id !== undefined && permisosSeleccionados.includes(permiso.id)">
+                                <span class="text-black">{{ permiso.name }}</span>
+                            </label>
+                        </div>
+                        <!-- Check para seleccionar todos -->
+                        <div class="mt-2">
+                            <label class="flex items-center gap-2">
+                                <input type="checkbox" [checked]="todosSeleccionados()"
+                                    (change)="toggleTodosPermisos($event)">
+                                <span class="text-black font-semibold">Seleccionar todos</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="flex gap-3 mt-4">
+                        <button type="submit"
+                            class="bg-blue-700 text-white font-semibold px-4 py-2 rounded-full hover:bg-blue-900 transition shadow">
+                            {{ modalMode === 'edit' ? 'Actualizar Rol' : 'Crear Rol' }}
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
