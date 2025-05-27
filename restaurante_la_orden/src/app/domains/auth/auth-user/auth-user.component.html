@@ -1,0 +1,80 @@
+<div class="min-h-screen bg-gray-100 p-6 relative">
+
+    <!-- Botón agregar usuario -->
+    <div class="flex justify-end mb-6">
+        <button (click)="openModal()"
+            class="flex items-center gap-2 bg-[#FFA500] text-white px-5 py-2 rounded-full hover:bg-orange-600 transition">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
+            </svg>
+            Agregar Usuario
+        </button>
+    </div>
+
+    <!-- Grid de tarjetas de usuarios -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div *ngFor="let usuario of usuarios; let i = index"
+            class="flex flex-col items-center p-6 rounded-3xl shadow-md min-w-[300px] max-w-[400px] cursor-pointer transition-transform transform hover:scale-105 relative"
+            [ngClass]="{'bg-[#003366] text-white': i % 2 === 0, 'bg-[#F1E1C6] text-gray-800': i % 2 !== 0}">
+
+            <!-- Botón eliminar (posición absoluta arriba a la derecha) -->
+
+
+            <!-- Info del usuario -->
+            <div class="text-center">
+                <h2 class="text-xl font-bold">{{ usuario.username }}</h2>
+                <p class="text-sm mt-2">{{ usuario.email }}</p>
+                <button (click)="openModal(usuario)"
+                    class="mt-4 bg-blue-500 text-white px-4 py-2 rounded-full hover:bg-blue-600 transition">
+                    Editar Usuario
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div *ngIf="showModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div class="bg-[#F1E1C6] p-6 rounded-2xl shadow-lg w-full max-w-2xl flex flex-col items-center gap-6 relative">
+
+            <!-- Botón de cerrar (X) en la esquina superior derecha -->
+            <button (click)="closeModal()"
+                class="absolute top-4 right-4 text-white text-xl font-bold hover:text-gray-400 transition">
+                &times;
+            </button>
+
+            <!-- Info y opciones para Usuario -->
+            <div class="flex-1 text-white w-full">
+                <h2 class="text-2xl font-bold text-[#FFA500] mb-2">
+                    {{ modalMode === 'create' ? 'Nuevo Usuario' : 'Actualizar Usuario' }}
+                </h2>
+                <form [formGroup]="usuarioForm" (ngSubmit)="modalMode === 'create' ? agregarUser() : actualizarMesa()">
+                    <input type="text" formControlName="username" placeholder="Nombre de usuario"
+                        class="text-black w-full pl-10 p-3 rounded-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-orange-400 mb-4">
+                    <input type="email" formControlName="email" placeholder="Correo electrónico"
+                        class="text-black w-full pl-10 p-3 rounded-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-orange-400 mb-4">
+                    <input type="password" formControlName="password" placeholder="Contraseña"
+                        class="text-black w-full pl-10 p-3 rounded-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-orange-400 mb-4">
+
+                    <div class="mb-4">
+                        <span class="text-[#FFA500] font-semibold">Rol:</span>{{ modalMode === 'create' ? 'Nuevo Rol' :
+                        'Actualizar Mesa' }}
+                        <div class="flex gap-2 mt-2">
+                            <select formControlName="role_id"
+                                class="text-black w-full p-3 rounded-full border border-gray-300">
+                                <option *ngFor="let rol of permisos" [value]="rol.id">{{ rol.name }}</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="flex gap-3 mt-4">
+                        <button type="submit"
+                            class="bg-[#003366] text-black font-semibold px-4 py-2 rounded-full hover:bg-gray-300 transition">
+                            {{ modalMode === 'create' ? 'Guardar Usuario' : 'Actualizar Usuario' }}
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

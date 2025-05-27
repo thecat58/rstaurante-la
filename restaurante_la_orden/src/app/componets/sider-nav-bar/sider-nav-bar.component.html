@@ -2,4 +2,5 @@
     @for (opcion of opciones_menu; track $index) {
         <app-menu-item [route]="opcion" [path]="['/pages', opcion.path!]" [collapsed]="collapsed"></app-menu-item>
     }
+
 </ul>

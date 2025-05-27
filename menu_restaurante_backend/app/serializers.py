@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from .modeloP import *
 from app.models import DetalleFactura, Factura, Menu, Mesa, Pedido, PedidoPlato, Plato
+from .modeloP import User, Role, Permission, UserRole, RolePermission, UserPermission
 
 class FacturaSerializer(serializers.ModelSerializer):
     class Meta:
@@ -84,7 +85,7 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['id', 'username', 'email', 'roles', 'permissions']
+        fields = ['id', 'username', 'email']
 
 class DetalleFacturaSerializer(serializers.ModelSerializer):
     class Meta:
@@ -95,3 +96,26 @@ class FacturaSerializer(serializers.ModelSerializer):
     class Meta:
         model = Factura
         fields = '__all__'
+
+class RoleSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Role
+        fields = ['id', 'name', 'description']
+
+class PermissionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Permission
+        fields = ['id', 'name', 'description']
+
+class UserRoleSerializer(serializers.ModelSerializer):
+    role = RoleSerializer(read_only=True)
+    class Meta:
+        model = UserRole
+        fields = ['id', 'role']
+
+class UserSerializer(serializers.ModelSerializer):
+    user_roles = UserRoleSerializer(source='userrole_set', many=True, read_only=True)
+
+    class Meta:
+        model = User
+        fields = ['id', 'username', 'email', 'user_roles']
